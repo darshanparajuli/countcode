@@ -115,7 +115,7 @@ fn pretty_print(slocs: Vec<SlocStr>) {
     }
 
     for _ in 0..total_len + 7 {
-        print!("-");
+        print!("=");
     }
     println!();
 
