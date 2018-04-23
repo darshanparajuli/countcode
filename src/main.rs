@@ -30,6 +30,7 @@ fn pretty_print(slocs: Vec<SlocStr>) {
     let mut code_len = 8;
     let mut comments_len = 10;
     let mut blanks_len = 6;
+
     for sloc in &slocs {
         if lang_len < sloc.lang.len() {
             lang_len = sloc.lang.len();
@@ -50,6 +51,7 @@ fn pretty_print(slocs: Vec<SlocStr>) {
             blanks_len = sloc.blanks.len();
         }
     }
+
     lang_len += 1;
     files_len += 1;
     lines_len += 1;
@@ -78,6 +80,7 @@ fn pretty_print(slocs: Vec<SlocStr>) {
         w4 = comments_len,
         w5 = blanks_len,
     );
+
     for _ in 0..total_len + 7 {
         print!("-");
     }
@@ -101,10 +104,12 @@ fn pretty_print(slocs: Vec<SlocStr>) {
             w5 = blanks_len,
         );
     }
+
     for _ in 0..total_len + 7 {
         print!("-");
     }
     println!();
+
     let sloc = slocs.get(len - 1).unwrap();
     println!(
         " {:<w0$} {:>w1$} {:>w2$} {:>w3$} {:>w4$} {:>w5$} ",
@@ -121,6 +126,7 @@ fn pretty_print(slocs: Vec<SlocStr>) {
         w4 = comments_len,
         w5 = blanks_len,
     );
+
     for _ in 0..total_len + 7 {
         print!("=");
     }
