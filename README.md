@@ -10,7 +10,7 @@ A simple program for counting SLOC very quickly. The design of the program's out
 
 ## Currently Supported Languages
 
-* C++
+* C/C++
 * Markdown
 * Rust
 * TOML
