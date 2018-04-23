@@ -104,13 +104,11 @@ impl Scanner {
 
                 None
             })
-            .map(|(lang, path)| -> Option<Sloc> {
+            .filter_map(|(lang, path)| -> Option<Sloc> {
                 let comment_info = comment_info.get(lang).unwrap();
                 let counter = Counter::new(path.to_path_buf(), lang.clone(), comment_info.clone());
                 counter.count()
             })
-            .filter(|a| a.is_some())
-            .map(|a| a.unwrap())
             .collect();
 
         for sloc in count_result {
