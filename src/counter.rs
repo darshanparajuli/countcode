@@ -76,7 +76,7 @@ impl Counter {
                         }
 
                         if multi_line_comment {
-                            if line.starts_with(
+                            if line.ends_with(
                                 self.comment_info.multi_line_end[multi_line_comment_index],
                             ) {
                                 multi_line_comment = false;
@@ -97,11 +97,19 @@ impl Counter {
                                     if line.starts_with(self.comment_info.multi_line_start[i]) {
                                         multi_line_comment = true;
                                         multi_line_comment_index = i;
+                                        sloc.comments += 1;
                                     }
-                                }
 
-                                if multi_line_comment {
-                                    sloc.comments += 1;
+                                    if multi_line_comment {
+                                        if line.ends_with(
+                                            self.comment_info.multi_line_end
+                                                [multi_line_comment_index],
+                                        ) {
+                                            multi_line_comment = false;
+                                        }
+
+                                        break;
+                                    }
                                 }
                             }
                         }
