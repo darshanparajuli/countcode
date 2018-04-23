@@ -66,52 +66,57 @@ impl Counter {
                 let mut multi_line_comment = false;
                 let mut multi_line_comment_index = 0;
                 for line in reader.lines() {
-                    if let Ok(line) = line {
-                        let line = line.trim();
-                        sloc.lines += 1;
+                    match line {
+                        Ok(line) => {
+                            let line = line.trim();
+                            sloc.lines += 1;
 
-                        if line.is_empty() {
-                            sloc.blanks += 1;
-                            continue;
-                        }
-
-                        if multi_line_comment {
-                            if line.ends_with(
-                                self.comment_info.multi_line_end[multi_line_comment_index],
-                            ) {
-                                multi_line_comment = false;
-                                multi_line_comment_index = 0;
+                            if line.is_empty() {
+                                sloc.blanks += 1;
+                                continue;
                             }
-                            sloc.comments += 1;
-                        } else {
-                            let is_comment = self.comment_info
-                                .single_line
-                                .iter()
-                                .filter(|a| line.starts_with(*a))
-                                .count() >= 1;
 
-                            if is_comment {
+                            if multi_line_comment {
+                                if line.ends_with(
+                                    self.comment_info.multi_line_end[multi_line_comment_index],
+                                ) {
+                                    multi_line_comment = false;
+                                    multi_line_comment_index = 0;
+                                }
                                 sloc.comments += 1;
                             } else {
-                                for i in 0..self.comment_info.multi_line_start.len() {
-                                    if line.starts_with(self.comment_info.multi_line_start[i]) {
-                                        multi_line_comment = true;
-                                        multi_line_comment_index = i;
-                                        sloc.comments += 1;
-                                    }
+                                let is_comment = self.comment_info
+                                    .single_line
+                                    .iter()
+                                    .filter(|a| line.starts_with(*a))
+                                    .count() >= 1;
 
-                                    if multi_line_comment {
-                                        if line.ends_with(
-                                            self.comment_info.multi_line_end
-                                                [multi_line_comment_index],
-                                        ) {
-                                            multi_line_comment = false;
+                                if is_comment {
+                                    sloc.comments += 1;
+                                } else {
+                                    for i in 0..self.comment_info.multi_line_start.len() {
+                                        if line.starts_with(self.comment_info.multi_line_start[i]) {
+                                            multi_line_comment = true;
+                                            multi_line_comment_index = i;
+                                            sloc.comments += 1;
                                         }
 
-                                        break;
+                                        if multi_line_comment {
+                                            if line.ends_with(
+                                                self.comment_info.multi_line_end
+                                                    [multi_line_comment_index],
+                                            ) {
+                                                multi_line_comment = false;
+                                            }
+
+                                            break;
+                                        }
                                     }
                                 }
                             }
+                        }
+                        Err(_) => {
+                            break;
                         }
                     }
                 }
