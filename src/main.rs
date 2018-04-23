@@ -12,18 +12,28 @@ use std::collections::HashSet;
 use std::fs;
 
 fn main() {
-    let mut args: Vec<_> = env::args()
-        .skip(1)
-        .filter_map(|a| fs::canonicalize(a).ok())
-        .map(|a| format!("{}", a.display()))
-        .collect();
-
+    let mut args: Vec<_> = env::args().skip(1).collect();
     if args.is_empty() {
         let path = env::current_dir().unwrap();
         args.push(path.to_str().unwrap().into());
     }
 
+    let mut args: Vec<_> = args.iter()
+        .filter_map(|a| match fs::canonicalize(a) {
+            Ok(a) => Some(a),
+            Err(_) => {
+                eprintln!("Invalid path: {}", a);
+                None
+            }
+        })
+        .map(|a| format!("{}", a.display()))
+        .collect();
+
     let args: HashSet<_> = args.drain(..).collect();
+
+    if args.is_empty() {
+        return;
+    }
 
     let mut scanner = Scanner::new();
     scanner.ignore_file(".git");
