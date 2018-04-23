@@ -53,9 +53,9 @@ impl Scanner {
         }
     }
 
-    pub fn scan(&mut self, path_input: Vec<PathBuf>) -> Vec<SlocStr> {
+    pub fn scan(&mut self, path_set: HashSet<PathBuf>) -> Vec<SlocStr> {
         let mut paths = Vec::new();
-        for p in path_input.iter() {
+        for p in path_set.iter() {
             self.walk(p, &mut paths);
         }
 

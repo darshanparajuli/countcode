@@ -8,13 +8,23 @@ use std::path::PathBuf;
 use std::env;
 use scanner::Scanner;
 use counter::SlocStr;
+use std::collections::HashSet;
+use std::fs;
 
 fn main() {
-    let mut paths: Vec<_> = env::args().skip(1).map(|a| PathBuf::from(a)).collect();
+    let mut paths: Vec<_> = env::args()
+        .skip(1)
+        .map(|a| fs::canonicalize(a))
+        .filter(|a| a.is_ok())
+        .map(|a| a.unwrap())
+        .collect();
+
     if paths.is_empty() {
         let path = env::current_dir().unwrap();
         paths.push(path.to_str().unwrap().into());
     }
+
+    let paths: HashSet<_> = paths.drain(..).collect();
 
     let mut scanner = Scanner::new();
     scanner.ignore_file(".git");
