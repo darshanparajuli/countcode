@@ -2,8 +2,9 @@ extern crate jobpool;
 extern crate num_cpus;
 extern crate walkdir;
 
-mod scanner;
 mod counter;
+mod lang;
+mod scanner;
 
 use std::env;
 use scanner::Scanner;
