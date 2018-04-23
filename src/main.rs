@@ -1,5 +1,4 @@
-extern crate jobpool;
-extern crate num_cpus;
+extern crate rayon;
 extern crate walkdir;
 
 mod counter;

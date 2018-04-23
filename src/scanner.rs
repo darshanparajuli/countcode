@@ -1,16 +1,12 @@
-use jobpool::JobPool;
-use num_cpus;
-use std::sync::mpsc;
 use std::collections::HashSet;
 use std::collections::hash_map::{Entry, HashMap};
 use counter::{CommentInfo, Counter, Sloc, SlocStr};
 use lang::Lang;
 use walkdir::WalkDir;
-use std::sync::mpsc::{Receiver, Sender};
 use std::sync::Arc;
+use rayon::prelude::*;
 
 pub struct Scanner {
-    jobpool: JobPool,
     extensions: HashMap<&'static str, Lang>,
     comment_info: HashMap<Lang, CommentInfo>,
     ignore_files: HashSet<String>,
@@ -18,7 +14,6 @@ pub struct Scanner {
 
 impl Scanner {
     pub fn new() -> Self {
-        let jobpool = JobPool::new(num_cpus::get());
         let mut extensions = HashMap::new();
 
         extensions.insert("c", Lang::C);
@@ -41,9 +36,9 @@ impl Scanner {
         let mut comment_info = HashMap::new();
 
         let cpp_style_comment = {
-            let single_line = Arc::new(vec!["//"]);
-            let multi_line_start = Arc::new(vec!["/*"]);
-            let multi_line_end = Arc::new(vec!["*/"]);
+            let single_line = Arc::new(["//"]);
+            let multi_line_start = Arc::new(["/*"]);
+            let multi_line_end = Arc::new(["*/"]);
             CommentInfo {
                 single_line,
                 multi_line_start,
@@ -61,9 +56,9 @@ impl Scanner {
         comment_info.insert(Lang::Toml, cpp_style_comment.clone());
 
         let py_style_comment = {
-            let single_line = Arc::new(vec!["#"]);
-            let multi_line_start = Arc::new(vec!["\"\"\""]);
-            let multi_line_end = Arc::new(vec!["\"\"\""]);
+            let single_line = Arc::new(["#"]);
+            let multi_line_start = Arc::new(["\"\"\""]);
+            let multi_line_end = Arc::new(["\"\"\""]);
             CommentInfo {
                 single_line,
                 multi_line_start,
@@ -74,7 +69,6 @@ impl Scanner {
         comment_info.insert(Lang::Python, py_style_comment.clone());
 
         Self {
-            jobpool,
             extensions,
             ignore_files: HashSet::new(),
             comment_info,
@@ -82,40 +76,45 @@ impl Scanner {
     }
 
     pub fn scan(&mut self, args: HashSet<String>) -> Vec<SlocStr> {
-        let (tx, rx): (Sender<Sloc>, Receiver<Sloc>) = mpsc::channel();
-        let mut count = 0;
+        let mut paths = Vec::new();
         for a in args.iter() {
             for entry in WalkDir::new(a)
                 .follow_links(false)
                 .into_iter()
                 .filter_map(|e| e.ok())
             {
-                let path = entry.path();
-                if let Some(ext) = path.extension() {
-                    if let Some(ext) = ext.to_str() {
-                        if let Some(lang) = self.extensions.get(&ext) {
-                            count += 1;
-                            let tx = tx.clone();
-                            let comment_info = self.comment_info.get(lang).unwrap();
-                            let counter = Counter::new(
-                                path.to_path_buf(),
-                                lang.clone(),
-                                comment_info.clone(),
-                            );
-                            self.jobpool.queue(move || {
-                                if let Some(sloc) = counter.count() {
-                                    tx.send(sloc).unwrap();
-                                }
-                            });
-                        }
-                    }
-                }
+                paths.push(entry);
             }
         }
 
+        let extensions = &self.extensions;
+        let comment_info = &self.comment_info;
         let mut sloc_map: HashMap<Lang, Sloc> = HashMap::new();
-        for _ in 0..count {
-            let sloc = rx.recv().unwrap();
+        let count_result: Vec<Sloc> = paths
+            .par_iter()
+            .filter_map(|entry| {
+                let path = entry.path();
+                if let Some(ext) = path.extension() {
+                    if let Some(ext) = ext.to_str() {
+                        if let Some(lang) = extensions.get(&ext) {
+                            return Some((lang, path));
+                        }
+                    }
+                }
+
+                None
+            })
+            .map(|(lang, path)| -> Option<Sloc> {
+                let comment_info = comment_info.get(lang).unwrap();
+                let counter = Counter::new(path.to_path_buf(), lang.clone(), comment_info.clone());
+                counter.count()
+            })
+            .filter(|a| a.is_some())
+            .map(|a| a.unwrap())
+            .collect();
+
+        println!("test");
+        for sloc in count_result {
             match sloc_map.entry(sloc.lang.clone()) {
                 Entry::Occupied(ref mut e) => {
                     let mut s = e.get_mut();

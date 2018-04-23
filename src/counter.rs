@@ -25,9 +25,9 @@ pub struct SlocStr {
 
 #[derive(Clone)]
 pub struct CommentInfo {
-    pub single_line: Arc<Vec<&'static str>>,
-    pub multi_line_start: Arc<Vec<&'static str>>,
-    pub multi_line_end: Arc<Vec<&'static str>>,
+    pub single_line: Arc<[&'static str]>,
+    pub multi_line_start: Arc<[&'static str]>,
+    pub multi_line_end: Arc<[&'static str]>,
 }
 
 impl Sloc {
