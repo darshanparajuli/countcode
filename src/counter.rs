@@ -3,6 +3,7 @@ use std::io::prelude::*;
 use std::io::BufReader;
 use std::fs::File;
 use std::fmt;
+use std::sync::Arc;
 
 #[derive(Clone)]
 pub struct Sloc {
@@ -24,9 +25,9 @@ pub struct SlocStr {
 
 #[derive(Clone)]
 pub struct CommentInfo {
-    pub single_line: Vec<&'static str>,
-    pub multi_line_start: Vec<&'static str>,
-    pub multi_line_end: Vec<&'static str>,
+    pub single_line: Arc<Vec<&'static str>>,
+    pub multi_line_start: Arc<Vec<&'static str>>,
+    pub multi_line_end: Arc<Vec<&'static str>>,
 }
 
 impl Sloc {

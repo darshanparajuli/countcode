@@ -6,6 +6,7 @@ use std::collections::hash_map::{Entry, HashMap};
 use counter::{CommentInfo, Counter, Lang, Sloc, SlocStr};
 use walkdir::WalkDir;
 use std::sync::mpsc::{Receiver, Sender};
+use std::sync::Arc;
 
 pub struct Scanner {
     jobpool: JobPool,
@@ -30,9 +31,9 @@ impl Scanner {
         let mut comment_info = HashMap::new();
 
         let comment = {
-            let single_line = vec!["//"];
-            let multi_line_start = vec!["/*"];
-            let multi_line_end = vec!["*/"];
+            let single_line = Arc::new(vec!["//"]);
+            let multi_line_start = Arc::new(vec!["/*"]);
+            let multi_line_end = Arc::new(vec!["*/"]);
             CommentInfo {
                 single_line,
                 multi_line_start,
