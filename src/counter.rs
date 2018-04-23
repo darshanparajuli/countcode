@@ -1,5 +1,4 @@
 use std::path::PathBuf;
-use std::collections::HashSet;
 use std::io::prelude::*;
 use std::io::BufReader;
 use std::fs::File;
@@ -25,7 +24,7 @@ pub struct SlocStr {
 
 #[derive(Clone)]
 pub struct CommentInfo {
-    pub single_line: HashSet<&'static str>,
+    pub single_line: Vec<&'static str>,
     pub multi_line_start: Vec<&'static str>,
     pub multi_line_end: Vec<&'static str>,
 }
@@ -63,11 +62,47 @@ impl Counter {
                 let mut reader = BufReader::new(f);
                 let mut sloc = Sloc::new(self.lang.clone());
                 sloc.files = 1;
+                let mut multi_line_comment = false;
+                let mut multi_line_comment_index = 0;
                 for line in reader.lines() {
                     if let Ok(line) = line {
+                        let line = line.trim();
                         sloc.lines += 1;
+
                         if line.is_empty() {
                             sloc.blanks += 1;
+                            continue;
+                        }
+
+                        if multi_line_comment {
+                            if line.starts_with(
+                                self.comment_info.multi_line_end[multi_line_comment_index],
+                            ) {
+                                multi_line_comment = false;
+                                multi_line_comment_index = 0;
+                            }
+                            sloc.comments += 1;
+                        } else {
+                            let is_comment = self.comment_info
+                                .single_line
+                                .iter()
+                                .filter(|a| line.starts_with(*a))
+                                .count() >= 1;
+
+                            if is_comment {
+                                sloc.comments += 1;
+                            } else {
+                                for i in 0..self.comment_info.multi_line_start.len() {
+                                    if line.starts_with(self.comment_info.multi_line_start[i]) {
+                                        multi_line_comment = true;
+                                        multi_line_comment_index = i;
+                                    }
+                                }
+
+                                if multi_line_comment {
+                                    sloc.comments += 1;
+                                }
+                            }
                         }
                     }
                 }

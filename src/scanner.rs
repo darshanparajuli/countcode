@@ -4,7 +4,6 @@ use std::sync::mpsc;
 use std::collections::HashSet;
 use std::collections::hash_map::{Entry, HashMap};
 use counter::{CommentInfo, Counter, Lang, Sloc, SlocStr};
-use std::iter::FromIterator;
 use walkdir::WalkDir;
 use std::sync::mpsc::{Receiver, Sender};
 
@@ -31,7 +30,7 @@ impl Scanner {
         let mut comment_info = HashMap::new();
 
         let comment = {
-            let single_line = HashSet::from_iter(vec!["//"]);
+            let single_line = vec!["//"];
             let multi_line_start = vec!["/*"];
             let multi_line_end = vec!["*/"];
             CommentInfo {
