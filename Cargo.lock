@@ -1,0 +1,30 @@
+[[package]]
+name = "countcode"
+version = "0.1.0"
+dependencies = [
+ "jobpool 0.3.8 (registry+https://github.com/rust-lang/crates.io-index)",
+ "num_cpus 1.8.0 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "jobpool"
+version = "0.3.8"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+
+[[package]]
+name = "libc"
+version = "0.2.40"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+
+[[package]]
+name = "num_cpus"
+version = "1.8.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+dependencies = [
+ "libc 0.2.40 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[metadata]
+"checksum jobpool 0.3.8 (registry+https://github.com/rust-lang/crates.io-index)" = "41a3b94e271acce0aa7c3c104d8cd27b2affc69250a89f018f72e2851a289855"
+"checksum libc 0.2.40 (registry+https://github.com/rust-lang/crates.io-index)" = "6fd41f331ac7c5b8ac259b8bf82c75c0fb2e469bbf37d2becbba9a6a2221965b"
+"checksum num_cpus 1.8.0 (registry+https://github.com/rust-lang/crates.io-index)" = "c51a3322e4bca9d212ad9a158a02abc6934d005490c054a2778df73a70aa0a30"
