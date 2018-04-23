@@ -4,7 +4,6 @@ extern crate num_cpus;
 mod scanner;
 mod counter;
 
-use std::path::PathBuf;
 use std::env;
 use scanner::Scanner;
 use counter::SlocStr;

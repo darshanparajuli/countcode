@@ -62,7 +62,6 @@ impl Counter {
             Ok(f) => {
                 let mut reader = BufReader::new(f);
                 let mut sloc = Sloc::new(self.lang.clone());
-                let mut buf = [0u8; 8192];
                 sloc.files = 1;
                 for line in reader.lines() {
                     if let Ok(line) = line {
