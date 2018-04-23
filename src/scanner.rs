@@ -26,6 +26,7 @@ impl Scanner {
         extensions.insert("cc", Lang::Cpp);
         extensions.insert("cpp", Lang::Cpp);
         extensions.insert("cxx", Lang::Cpp);
+        extensions.insert("go", Lang::Go);
         extensions.insert("h", Lang::CHeader);
         extensions.insert("h++", Lang::CppHeader);
         extensions.insert("hh", Lang::CppHeader);
@@ -52,6 +53,7 @@ impl Scanner {
         comment_info.insert(Lang::CHeader, cpp_style_comment.clone());
         comment_info.insert(Lang::Cpp, cpp_style_comment.clone());
         comment_info.insert(Lang::CppHeader, cpp_style_comment.clone());
+        comment_info.insert(Lang::Go, cpp_style_comment.clone());
         comment_info.insert(Lang::Markdown, cpp_style_comment.clone());
         comment_info.insert(Lang::Rust, cpp_style_comment.clone());
         comment_info.insert(Lang::Toml, cpp_style_comment.clone());
