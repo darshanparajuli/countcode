@@ -89,7 +89,6 @@ impl Scanner {
 
         let extensions = &self.extensions;
         let comment_info = &self.comment_info;
-        let mut sloc_map: HashMap<Lang, Sloc> = HashMap::new();
         let count_result: Vec<Sloc> = paths
             .par_iter()
             .filter_map(|entry| {
@@ -111,6 +110,7 @@ impl Scanner {
             })
             .collect();
 
+        let mut sloc_map: HashMap<Lang, Sloc> = HashMap::new();
         for sloc in count_result {
             match sloc_map.entry(sloc.lang.clone()) {
                 Entry::Occupied(ref mut e) => {
