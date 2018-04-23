@@ -113,7 +113,6 @@ impl Scanner {
             .map(|a| a.unwrap())
             .collect();
 
-        println!("test");
         for sloc in count_result {
             match sloc_map.entry(sloc.lang.clone()) {
                 Entry::Occupied(ref mut e) => {
