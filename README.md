@@ -4,9 +4,9 @@ A simple program for counting SLOC very quickly. The design of the program's out
 
 ## Installation
 
-0. Make sure `cargo` is installed.
-1. clone this repo
-2. Run `cargo install`
+0. Make sure the Rust package manager, `cargo`, is installed.
+1. Clone this repo.
+2. Run `cargo install`.
 
 ## Currently Supported Languages
 
