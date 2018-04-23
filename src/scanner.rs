@@ -1,12 +1,12 @@
 use jobpool::JobPool;
 use num_cpus;
-use std::path::{Path, PathBuf};
 use std::sync::mpsc;
-use std::fs;
 use std::collections::HashSet;
 use std::collections::hash_map::{Entry, HashMap};
 use counter::{CommentInfo, Counter, Lang, Sloc, SlocStr};
 use std::iter::FromIterator;
+use walkdir::WalkDir;
+use std::sync::mpsc::{Receiver, Sender};
 
 pub struct Scanner {
     jobpool: JobPool,
@@ -53,26 +53,40 @@ impl Scanner {
         }
     }
 
-    pub fn scan(&mut self, path_set: HashSet<PathBuf>) -> Vec<SlocStr> {
-        let mut paths = Vec::new();
-        for p in path_set.iter() {
-            self.walk(p, &mut paths);
-        }
-
-        let (tx, rx) = mpsc::channel();
-        for &(ref path, ref lang) in paths.iter() {
-            let tx = tx.clone();
-            let comment_info = self.comment_info.get(lang).unwrap();
-            let counter = Counter::new(path.to_path_buf(), lang.clone(), comment_info.clone());
-            self.jobpool.queue(move || {
-                if let Some(sloc) = counter.count() {
-                    tx.send(sloc).unwrap();
+    pub fn scan(&mut self, args: HashSet<String>) -> Vec<SlocStr> {
+        let (tx, rx): (Sender<Sloc>, Receiver<Sloc>) = mpsc::channel();
+        let mut count = 0;
+        for a in args.iter() {
+            for entry in WalkDir::new(a)
+                .follow_links(false)
+                .into_iter()
+                .filter_map(|e| e.ok())
+            {
+                let path = entry.path();
+                if let Some(ext) = path.extension() {
+                    if let Some(ext) = ext.to_str() {
+                        if let Some(lang) = self.extensions.get(&ext) {
+                            count += 1;
+                            let tx = tx.clone();
+                            let comment_info = self.comment_info.get(lang).unwrap();
+                            let counter = Counter::new(
+                                path.to_path_buf(),
+                                lang.clone(),
+                                comment_info.clone(),
+                            );
+                            self.jobpool.queue(move || {
+                                if let Some(sloc) = counter.count() {
+                                    tx.send(sloc).unwrap();
+                                }
+                            });
+                        }
+                    }
                 }
-            });
+            }
         }
 
         let mut sloc_map: HashMap<Lang, Sloc> = HashMap::new();
-        for _ in 0..paths.len() {
+        for _ in 0..count {
             let sloc = rx.recv().unwrap();
             match sloc_map.entry(sloc.lang.clone()) {
                 Entry::Occupied(ref mut e) => {
@@ -109,42 +123,6 @@ impl Scanner {
                 blanks: format!("{}", s.blanks),
             })
             .collect()
-    }
-
-    fn walk(&self, path: &Path, paths: &mut Vec<(PathBuf, Lang)>) {
-        let pathstr = path.to_str().unwrap();
-        if let Ok(metadata) = fs::metadata(pathstr) {
-            if metadata.file_type().is_symlink() {
-                return;
-            }
-        }
-
-        if let Some(name) = path.file_name() {
-            if let Some(s) = name.to_str() {
-                if self.ignore_files.contains(s) {
-                    return;
-                }
-            }
-        }
-
-        if path.is_dir() {
-            if let Ok(dir) = path.read_dir() {
-                for entry in dir {
-                    if let Ok(entry) = entry {
-                        self.walk(&entry.path(), paths);
-                    }
-                }
-            }
-        } else {
-            if let Some(ext) = path.extension() {
-                if let Some(s) = ext.to_str() {
-                    let s = s.to_lowercase();
-                    if let Some(lang) = self.extensions.get(&s.as_str()) {
-                        paths.push((path.to_path_buf(), lang.clone()));
-                    }
-                }
-            }
-        }
     }
 
     pub fn ignore_file(&mut self, file_name: &str) {

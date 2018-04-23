@@ -1,5 +1,6 @@
 extern crate jobpool;
 extern crate num_cpus;
+extern crate walkdir;
 
 mod scanner;
 mod counter;
@@ -11,24 +12,23 @@ use std::collections::HashSet;
 use std::fs;
 
 fn main() {
-    let mut paths: Vec<_> = env::args()
+    let mut args: Vec<_> = env::args()
         .skip(1)
-        .map(|a| fs::canonicalize(a))
-        .filter(|a| a.is_ok())
-        .map(|a| a.unwrap())
+        .filter_map(|a| fs::canonicalize(a).ok())
+        .map(|a| format!("{}", a.display()))
         .collect();
 
-    if paths.is_empty() {
+    if args.is_empty() {
         let path = env::current_dir().unwrap();
-        paths.push(path.to_str().unwrap().into());
+        args.push(path.to_str().unwrap().into());
     }
 
-    let paths: HashSet<_> = paths.drain(..).collect();
+    let args: HashSet<_> = args.drain(..).collect();
 
     let mut scanner = Scanner::new();
     scanner.ignore_file(".git");
 
-    let slocs = scanner.scan(paths);
+    let slocs = scanner.scan(args);
     pretty_print(slocs);
 }
 

@@ -6,3 +6,4 @@ authors = ["Darshan Parajuli <parajulidarshan@gmail.com>"]
 [dependencies]
 jobpool = "0.3.8"
 num_cpus = "1.8.0"
+walkdir = "2.1.4"
