@@ -20,13 +20,19 @@ impl Scanner {
         let jobpool = JobPool::new(num_cpus::get());
         let mut extensions = HashMap::new();
 
-        extensions.insert("rs", Lang::Rust);
-        extensions.insert("cc", Lang::Cpp);
-        extensions.insert("cxx", Lang::Cpp);
-        extensions.insert("cpp", Lang::Cpp);
+        extensions.insert("c", Lang::C);
         extensions.insert("c++", Lang::Cpp);
-        extensions.insert("toml", Lang::Toml);
+        extensions.insert("cc", Lang::Cpp);
+        extensions.insert("cpp", Lang::Cpp);
+        extensions.insert("cxx", Lang::Cpp);
+        extensions.insert("h", Lang::CHeader);
+        extensions.insert("h++", Lang::CppHeader);
+        extensions.insert("hh", Lang::CppHeader);
+        extensions.insert("hpp", Lang::CppHeader);
+        extensions.insert("hxx", Lang::CppHeader);
         extensions.insert("md", Lang::Markdown);
+        extensions.insert("rs", Lang::Rust);
+        extensions.insert("toml", Lang::Toml);
 
         let mut comment_info = HashMap::new();
 
@@ -40,10 +46,14 @@ impl Scanner {
                 multi_line_end,
             }
         };
-        comment_info.insert(Lang::Rust, comment.clone());
+
+        comment_info.insert(Lang::C, comment.clone());
+        comment_info.insert(Lang::CHeader, comment.clone());
         comment_info.insert(Lang::Cpp, comment.clone());
+        comment_info.insert(Lang::CppHeader, comment.clone());
+        comment_info.insert(Lang::Markdown, comment.clone());
+        comment_info.insert(Lang::Rust, comment.clone());
         comment_info.insert(Lang::Toml, comment.clone());
-        comment_info.insert(Lang::Markdown, comment);
 
         Self {
             jobpool,
