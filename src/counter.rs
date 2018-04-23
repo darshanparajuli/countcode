@@ -97,7 +97,7 @@ impl fmt::Display for Lang {
             Rust => write!(f, "Rust"),
             Toml => write!(f, "TOML"),
             Markdown => write!(f, "Markdown"),
-            Total => write!(f, "Total"),
+            Total => write!(f, "TOTAL"),
         }
     }
 }
