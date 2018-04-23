@@ -33,12 +33,12 @@ fn main() {
 }
 
 fn pretty_print(slocs: Vec<SlocStr>) {
-    let mut lang_len = 8;
-    let mut files_len = 8;
-    let mut lines_len = 8;
-    let mut code_len = 8;
+    let mut lang_len = 10;
+    let mut files_len = 10;
+    let mut lines_len = 10;
+    let mut code_len = 10;
     let mut comments_len = 10;
-    let mut blanks_len = 6;
+    let mut blanks_len = 10;
 
     for sloc in &slocs {
         if lang_len < sloc.lang.len() {
