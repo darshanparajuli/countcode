@@ -33,6 +33,8 @@ impl Scanner {
         extensions.insert("hpp", Lang::CppHeader);
         extensions.insert("hxx", Lang::CppHeader);
         extensions.insert("md", Lang::Markdown);
+        extensions.insert("py", Lang::Python);
+        extensions.insert("py3", Lang::Python);
         extensions.insert("rs", Lang::Rust);
         extensions.insert("toml", Lang::Toml);
 
@@ -57,6 +59,19 @@ impl Scanner {
         comment_info.insert(Lang::Markdown, cpp_style_comment.clone());
         comment_info.insert(Lang::Rust, cpp_style_comment.clone());
         comment_info.insert(Lang::Toml, cpp_style_comment.clone());
+
+        let py_style_comment = {
+            let single_line = Arc::new(vec!["#"]);
+            let multi_line_start = Arc::new(vec!["\"\"\""]);
+            let multi_line_end = Arc::new(vec!["\"\"\""]);
+            CommentInfo {
+                single_line,
+                multi_line_start,
+                multi_line_end,
+            }
+        };
+
+        comment_info.insert(Lang::Python, py_style_comment.clone());
 
         Self {
             jobpool,

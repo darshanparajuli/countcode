@@ -8,6 +8,7 @@ pub enum Lang {
     CppHeader,
     Go,
     Markdown,
+    Python,
     Rust,
     Toml,
 
@@ -24,6 +25,7 @@ impl fmt::Display for Lang {
             CppHeader => write!(f, "Cpp Header"),
             Go => write!(f, "Go"),
             Markdown => write!(f, "Markdown"),
+            Python => write!(f, "Python"),
             Rust => write!(f, "Rust"),
             Toml => write!(f, "TOML"),
 
