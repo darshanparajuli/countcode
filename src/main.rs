@@ -76,7 +76,7 @@ fn pretty_print(slocs: Vec<SlocStr>) {
 
     println!(
         " {:<w0$} {:>w1$} {:>w2$} {:>w3$} {:>w4$} {:>w5$} ",
-        "Lang",
+        "Language",
         "Files",
         "Lines",
         "Code",
