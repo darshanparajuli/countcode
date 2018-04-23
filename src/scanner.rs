@@ -27,6 +27,8 @@ impl Scanner {
         extensions.insert("hh", Lang::CppHeader);
         extensions.insert("hpp", Lang::CppHeader);
         extensions.insert("hxx", Lang::CppHeader);
+        extensions.insert("java", Lang::Java);
+        extensions.insert("kt", Lang::Kotlin);
         extensions.insert("md", Lang::Markdown);
         extensions.insert("py", Lang::Python);
         extensions.insert("py3", Lang::Python);
@@ -51,6 +53,8 @@ impl Scanner {
         comment_info.insert(Lang::Cpp, cpp_style_comment.clone());
         comment_info.insert(Lang::CppHeader, cpp_style_comment.clone());
         comment_info.insert(Lang::Go, cpp_style_comment.clone());
+        comment_info.insert(Lang::Java, cpp_style_comment.clone());
+        comment_info.insert(Lang::Kotlin, cpp_style_comment.clone());
         comment_info.insert(Lang::Markdown, cpp_style_comment.clone());
         comment_info.insert(Lang::Rust, cpp_style_comment.clone());
         comment_info.insert(Lang::Toml, cpp_style_comment.clone());
