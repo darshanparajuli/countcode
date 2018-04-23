@@ -36,7 +36,7 @@ impl Scanner {
 
         let mut comment_info = HashMap::new();
 
-        let comment = {
+        let cpp_style_comment = {
             let single_line = Arc::new(vec!["//"]);
             let multi_line_start = Arc::new(vec!["/*"]);
             let multi_line_end = Arc::new(vec!["*/"]);
@@ -47,13 +47,13 @@ impl Scanner {
             }
         };
 
-        comment_info.insert(Lang::C, comment.clone());
-        comment_info.insert(Lang::CHeader, comment.clone());
-        comment_info.insert(Lang::Cpp, comment.clone());
-        comment_info.insert(Lang::CppHeader, comment.clone());
-        comment_info.insert(Lang::Markdown, comment.clone());
-        comment_info.insert(Lang::Rust, comment.clone());
-        comment_info.insert(Lang::Toml, comment.clone());
+        comment_info.insert(Lang::C, cpp_style_comment.clone());
+        comment_info.insert(Lang::CHeader, cpp_style_comment.clone());
+        comment_info.insert(Lang::Cpp, cpp_style_comment.clone());
+        comment_info.insert(Lang::CppHeader, cpp_style_comment.clone());
+        comment_info.insert(Lang::Markdown, cpp_style_comment.clone());
+        comment_info.insert(Lang::Rust, cpp_style_comment.clone());
+        comment_info.insert(Lang::Toml, cpp_style_comment.clone());
 
         Self {
             jobpool,
