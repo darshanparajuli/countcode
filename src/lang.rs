@@ -16,14 +16,15 @@ pub enum Lang {
     Cpp,
     CppHeader,
     Go,
+    Html,
     Java,
     JavaScript,
-    TypeScript,
     Kotlin,
     Markdown,
     Python,
     Rust,
     Toml,
+    TypeScript,
 
     Total,
 }
@@ -42,15 +43,17 @@ impl Lang {
         extensions.insert("h++", Lang::CppHeader);
         extensions.insert("hh", Lang::CppHeader);
         extensions.insert("hpp", Lang::CppHeader);
+        extensions.insert("htm", Lang::Html);
+        extensions.insert("html", Lang::Html);
         extensions.insert("hxx", Lang::CppHeader);
         extensions.insert("java", Lang::Java);
+        extensions.insert("js", Lang::JavaScript);
         extensions.insert("kt", Lang::Kotlin);
         extensions.insert("md", Lang::Markdown);
         extensions.insert("py", Lang::Python);
         extensions.insert("py3", Lang::Python);
         extensions.insert("rs", Lang::Rust);
         extensions.insert("toml", Lang::Toml);
-        extensions.insert("js", Lang::JavaScript);
         extensions.insert("ts", Lang::TypeScript);
 
         extensions
@@ -93,8 +96,19 @@ impl Lang {
                 multi_line_end,
             }
         };
+        comment_info.insert(Lang::Python, py_style_comment);
 
-        comment_info.insert(Lang::Python, py_style_comment.clone());
+        let html_style_comment = {
+            let single_line = Arc::new([]);
+            let multi_line_start = Arc::new(["<!--"]);
+            let multi_line_end = Arc::new(["-->"]);
+            CommentInfo {
+                single_line,
+                multi_line_start,
+                multi_line_end,
+            }
+        };
+        comment_info.insert(Lang::Html, html_style_comment);
 
         comment_info
     }
@@ -109,13 +123,14 @@ impl fmt::Display for Lang {
             Cpp => write!(f, "C++"),
             CppHeader => write!(f, "Cpp Header"),
             Go => write!(f, "Go"),
+            Html => write!(f, "HTML"),
             Java => write!(f, "Java"),
+            JavaScript => write!(f, "JavaScript"),
             Kotlin => write!(f, "Kotlin"),
             Markdown => write!(f, "Markdown"),
             Python => write!(f, "Python"),
             Rust => write!(f, "Rust"),
             Toml => write!(f, "TOML"),
-            JavaScript => write!(f, "JavaScript"),
             TypeScript => write!(f, "TypeScript"),
 
             Total => write!(f, "TOTAL"),
