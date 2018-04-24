@@ -11,6 +11,17 @@ A simple program for counting SLOC very quickly. The design of the program's out
 ## Currently Supported Languages
 
 * C/C++
+* D
+* Go
+* HTML
+* Java
+* JavaScript
+* Kotlin
 * Markdown
+* Perl
+* Python
+* Ruby
 * Rust
 * TOML
+* TypeScript
+
