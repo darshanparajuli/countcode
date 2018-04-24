@@ -29,6 +29,7 @@ pub enum Lang {
     Rust,
     Toml,
     TypeScript,
+    Yaml,
 
     Total,
 }
@@ -64,6 +65,8 @@ impl Lang {
         extensions.insert("rs", Lang::Rust);
         extensions.insert("toml", Lang::Toml);
         extensions.insert("ts", Lang::TypeScript);
+        extensions.insert("yml", Lang::Yaml);
+        extensions.insert("yaml", Lang::Yaml);
 
         extensions
     }
@@ -145,6 +148,18 @@ impl Lang {
         };
         comment_info.insert(Lang::Perl, perl_style_comment);
 
+        let yaml_style_comment = {
+            let single_line = Arc::new(["#"]);
+            let multi_line_start = Arc::new([]);
+            let multi_line_end = Arc::new([]);
+            CommentInfo {
+                single_line,
+                multi_line_start,
+                multi_line_end,
+            }
+        };
+        comment_info.insert(Lang::Yaml, yaml_style_comment);
+
         comment_info
     }
 }
@@ -171,6 +186,7 @@ impl fmt::Display for Lang {
             Rust => write!(f, "Rust"),
             Toml => write!(f, "TOML"),
             TypeScript => write!(f, "TypeScript"),
+            Yaml => write!(f, "YAML"),
 
             Total => write!(f, "TOTAL"),
         }

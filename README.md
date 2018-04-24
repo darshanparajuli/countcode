@@ -24,4 +24,5 @@ A simple program for counting SLOC very quickly. The design of the program's out
 * Rust
 * TOML
 * TypeScript
+* YAML
 
