@@ -44,11 +44,7 @@ impl Scanner {
                     if let Some(ext) = ext.to_str() {
                         if let Some(lang) = extensions.get(&ext) {
                             let comment_info = comment_info.get(lang).unwrap();
-                            let counter = Counter::new(
-                                path.to_path_buf(),
-                                lang.clone(),
-                                comment_info.clone(),
-                            );
+                            let counter = Counter::new(&path, lang.clone(), comment_info.clone());
                             return counter.count();
                         }
                     }

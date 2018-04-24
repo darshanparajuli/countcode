@@ -1,9 +1,9 @@
-use std::path::PathBuf;
 use std::io::prelude::*;
 use std::io::BufReader;
 use std::fs::File;
 use lang::{CommentInfo, Lang};
 use std::ops::AddAssign;
+use std::path::Path;
 
 #[derive(Clone)]
 pub struct Stats {
@@ -64,14 +64,14 @@ impl Sloc {
     }
 }
 
-pub struct Counter {
-    path: PathBuf,
+pub struct Counter<'a> {
+    path: &'a Path,
     lang: Lang,
     comment_info: CommentInfo,
 }
 
-impl Counter {
-    pub fn new(path: PathBuf, lang: Lang, comment_info: CommentInfo) -> Self {
+impl<'a> Counter<'a> {
+    pub fn new(path: &'a Path, lang: Lang, comment_info: CommentInfo) -> Self {
         Self {
             path,
             lang,
