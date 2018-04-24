@@ -77,11 +77,17 @@ impl Counter {
                                 }
                                 sloc.comments += 1;
                             } else {
-                                let is_comment = self.comment_info
-                                    .single_line
-                                    .iter()
-                                    .filter(|a| line.starts_with(*a))
-                                    .count() >= 1;
+                                let is_comment = {
+                                    if self.comment_info.single_line.is_empty() {
+                                        false
+                                    } else {
+                                        self.comment_info
+                                            .single_line
+                                            .iter()
+                                            .filter(|a| line.starts_with(*a))
+                                            .count() >= 1
+                                    }
+                                };
 
                                 if is_comment {
                                     sloc.comments += 1;
