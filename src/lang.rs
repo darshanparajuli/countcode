@@ -23,6 +23,7 @@ pub enum Lang {
     JavaScript,
     Kotlin,
     Markdown,
+    Perl,
     Python,
     Ruby,
     Rust,
@@ -56,6 +57,7 @@ impl Lang {
         extensions.insert("js", Lang::JavaScript);
         extensions.insert("kt", Lang::Kotlin);
         extensions.insert("md", Lang::Markdown);
+        extensions.insert("pl", Lang::Perl);
         extensions.insert("py", Lang::Python);
         extensions.insert("py3", Lang::Python);
         extensions.insert("rb", Lang::Ruby);
@@ -131,6 +133,18 @@ impl Lang {
         };
         comment_info.insert(Lang::Ruby, ruby_style_comment);
 
+        let perl_style_comment = {
+            let single_line = Arc::new(["#"]);
+            let multi_line_start = Arc::new(["=begin"]);
+            let multi_line_end = Arc::new(["=cut"]);
+            CommentInfo {
+                single_line,
+                multi_line_start,
+                multi_line_end,
+            }
+        };
+        comment_info.insert(Lang::Perl, perl_style_comment);
+
         comment_info
     }
 }
@@ -151,6 +165,7 @@ impl fmt::Display for Lang {
             JavaScript => write!(f, "JavaScript"),
             Kotlin => write!(f, "Kotlin"),
             Markdown => write!(f, "Markdown"),
+            Perl => write!(f, "Perl"),
             Python => write!(f, "Python"),
             Ruby => write!(f, "Ruby"),
             Rust => write!(f, "Rust"),
