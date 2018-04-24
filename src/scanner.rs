@@ -3,7 +3,6 @@ use std::collections::hash_map::{Entry, HashMap};
 use counter::{Counter, Sloc, SlocStr};
 use lang::{CommentInfo, Lang};
 use walkdir::WalkDir;
-use std::sync::Arc;
 use rayon::prelude::*;
 
 pub struct Scanner {
@@ -14,64 +13,8 @@ pub struct Scanner {
 
 impl Scanner {
     pub fn new() -> Self {
-        let mut extensions = HashMap::new();
-
-        extensions.insert("c", Lang::C);
-        extensions.insert("c++", Lang::Cpp);
-        extensions.insert("cc", Lang::Cpp);
-        extensions.insert("cpp", Lang::Cpp);
-        extensions.insert("cxx", Lang::Cpp);
-        extensions.insert("go", Lang::Go);
-        extensions.insert("h", Lang::CHeader);
-        extensions.insert("h++", Lang::CppHeader);
-        extensions.insert("hh", Lang::CppHeader);
-        extensions.insert("hpp", Lang::CppHeader);
-        extensions.insert("hxx", Lang::CppHeader);
-        extensions.insert("java", Lang::Java);
-        extensions.insert("kt", Lang::Kotlin);
-        extensions.insert("md", Lang::Markdown);
-        extensions.insert("py", Lang::Python);
-        extensions.insert("py3", Lang::Python);
-        extensions.insert("rs", Lang::Rust);
-        extensions.insert("toml", Lang::Toml);
-
-        let mut comment_info = HashMap::new();
-
-        let cpp_style_comment = {
-            let single_line = Arc::new(["//"]);
-            let multi_line_start = Arc::new(["/*"]);
-            let multi_line_end = Arc::new(["*/"]);
-            CommentInfo {
-                single_line,
-                multi_line_start,
-                multi_line_end,
-            }
-        };
-
-        comment_info.insert(Lang::C, cpp_style_comment.clone());
-        comment_info.insert(Lang::CHeader, cpp_style_comment.clone());
-        comment_info.insert(Lang::Cpp, cpp_style_comment.clone());
-        comment_info.insert(Lang::CppHeader, cpp_style_comment.clone());
-        comment_info.insert(Lang::Go, cpp_style_comment.clone());
-        comment_info.insert(Lang::Java, cpp_style_comment.clone());
-        comment_info.insert(Lang::Kotlin, cpp_style_comment.clone());
-        comment_info.insert(Lang::Markdown, cpp_style_comment.clone());
-        comment_info.insert(Lang::Rust, cpp_style_comment.clone());
-        comment_info.insert(Lang::Toml, cpp_style_comment.clone());
-
-        let py_style_comment = {
-            let single_line = Arc::new(["#"]);
-            let multi_line_start = Arc::new(["\"\"\""]);
-            let multi_line_end = Arc::new(["\"\"\""]);
-            CommentInfo {
-                single_line,
-                multi_line_start,
-                multi_line_end,
-            }
-        };
-
-        comment_info.insert(Lang::Python, py_style_comment.clone());
-
+        let extensions = Lang::extensions();
+        let comment_info = Lang::comment_info();
         Self {
             extensions,
             ignore_files: HashSet::new(),
