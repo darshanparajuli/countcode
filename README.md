@@ -8,7 +8,7 @@ A simple program for counting SLOC very quickly. The design of the program's out
 1. Clone this repo.
 2. Run `cargo install`.
 
-## Supported Languages
+## Supported File Types
 
 * C/C++
 * CSS
@@ -21,8 +21,10 @@ A simple program for counting SLOC very quickly. The design of the program's out
 * JSON
 * Kotlin
 * Lua
+* Makefile
 * Markdown
 * Perl
+* Plain Text
 * Python
 * Ruby
 * Rust
