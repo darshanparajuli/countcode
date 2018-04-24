@@ -40,16 +40,31 @@ impl Scanner {
             .par_iter()
             .filter_map(|entry| {
                 let path = entry.path();
-                if let Some(ext) = path.extension() {
-                    if let Some(ext) = ext.to_str() {
-                        if let Some(lang) = extensions.get(&ext) {
-                            let comment_info = comment_info.get(lang).unwrap();
-                            let counter = Counter::new(&path, lang.clone(), comment_info.clone());
-                            return counter.count();
+                let lang = {
+                    let lang = path.extension()
+                        .and_then(|e| e.to_str())
+                        .and_then(|e| extensions.get(e));
+
+                    if let Some(lang) = lang {
+                        Some(lang)
+                    } else {
+                        let is_mkfile = path.file_name()
+                            .and_then(|e| e.to_str())
+                            .map_or(false, |e| e.to_lowercase() == "makefile");
+
+                        if is_mkfile {
+                            Some(&Lang::Makefile)
+                        } else {
+                            None
                         }
                     }
-                }
+                };
 
+                if let Some(lang) = lang {
+                    let comment_info = comment_info.get(lang).unwrap();
+                    let counter = Counter::new(&path, lang.clone(), comment_info.clone());
+                    return counter.count();
+                }
                 None
             })
             .collect();

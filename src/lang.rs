@@ -25,6 +25,7 @@ pub enum Lang {
     Json,
     Kotlin,
     Lua,
+    Makefile,
     Markdown,
     Perl,
     PlainText,
@@ -65,6 +66,7 @@ impl Lang {
         extensions.insert("json", Lang::Json);
         extensions.insert("kt", Lang::Kotlin);
         extensions.insert("lua", Lang::Lua);
+        extensions.insert("mk", Lang::Makefile);
         extensions.insert("md", Lang::Markdown);
         extensions.insert("pl", Lang::Perl);
         extensions.insert("py", Lang::Python);
@@ -169,7 +171,8 @@ impl Lang {
                 multi_line_end,
             }
         };
-        comment_info.insert(Lang::Yaml, yaml_style_comment);
+        comment_info.insert(Lang::Yaml, yaml_style_comment.clone());
+        comment_info.insert(Lang::Makefile, yaml_style_comment);
 
         let haskell_style_comment = {
             let single_line = Arc::new(["--"]);
@@ -241,6 +244,7 @@ impl fmt::Display for Lang {
             Json => write!(f, "JSON"),
             Kotlin => write!(f, "Kotlin"),
             Lua => write!(f, "Lua"),
+            Makefile => write!(f, "Makefile"),
             Markdown => write!(f, "Markdown"),
             Perl => write!(f, "Perl"),
             PlainText => write!(f, "Plain Text"),
