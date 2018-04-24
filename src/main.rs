@@ -1,5 +1,5 @@
+extern crate ignore;
 extern crate rayon;
-extern crate walkdir;
 
 mod counter;
 mod lang;

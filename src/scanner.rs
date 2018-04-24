@@ -2,8 +2,8 @@ use std::collections::HashSet;
 use std::collections::hash_map::{Entry, HashMap};
 use counter::{Counter, Sloc, SlocStr};
 use lang::{CommentInfo, Lang};
-use walkdir::WalkDir;
 use rayon::prelude::*;
+use ignore::Walk;
 
 pub struct Scanner {
     extensions: HashMap<&'static str, Lang>,
@@ -25,11 +25,7 @@ impl Scanner {
     pub fn scan(&mut self, args: HashSet<String>) -> Vec<SlocStr> {
         let mut paths = Vec::new();
         for a in args.iter() {
-            for entry in WalkDir::new(a)
-                .follow_links(false)
-                .into_iter()
-                .filter_map(|e| e.ok())
-            {
+            for entry in Walk::new(a).into_iter().filter_map(|e| e.ok()) {
                 paths.push(entry);
             }
         }
