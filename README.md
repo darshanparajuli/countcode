@@ -19,6 +19,7 @@ A simple program for counting SLOC very quickly. The design of the program's out
 * Java
 * JavaScript
 * Kotlin
+* Lua
 * Markdown
 * Perl
 * Python

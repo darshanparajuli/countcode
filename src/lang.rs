@@ -23,6 +23,7 @@ pub enum Lang {
     Java,
     JavaScript,
     Kotlin,
+    Lua,
     Markdown,
     Perl,
     Python,
@@ -69,6 +70,7 @@ impl Lang {
         extensions.insert("ts", Lang::TypeScript);
         extensions.insert("yml", Lang::Yaml);
         extensions.insert("yaml", Lang::Yaml);
+        extensions.insert("lua", Lang::Lua);
 
         extensions
     }
@@ -174,6 +176,18 @@ impl Lang {
         };
         comment_info.insert(Lang::Haskell, haskell_style_comment);
 
+        let lua_style_comment = {
+            let single_line = Arc::new(["--"]);
+            let multi_line_start = Arc::new(["--[["]);
+            let multi_line_end = Arc::new(["--]]"]);
+            CommentInfo {
+                single_line,
+                multi_line_start,
+                multi_line_end,
+            }
+        };
+        comment_info.insert(Lang::Lua, lua_style_comment);
+
         comment_info
     }
 }
@@ -194,6 +208,7 @@ impl fmt::Display for Lang {
             Java => write!(f, "Java"),
             JavaScript => write!(f, "JavaScript"),
             Kotlin => write!(f, "Kotlin"),
+            Lua => write!(f, "Lua"),
             Markdown => write!(f, "Markdown"),
             Perl => write!(f, "Perl"),
             Python => write!(f, "Python"),
