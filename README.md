@@ -8,7 +8,7 @@ A simple program for counting SLOC very quickly. The design of the program's out
 1. Clone this repo.
 2. Run `cargo install`.
 
-## Currently Supported Languages
+## Supported Languages
 
 * C/C++
 * CSS
