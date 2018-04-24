@@ -17,6 +17,8 @@ pub enum Lang {
     CppHeader,
     Go,
     Java,
+    JavaScript,
+    TypeScript,
     Kotlin,
     Markdown,
     Python,
@@ -48,6 +50,8 @@ impl Lang {
         extensions.insert("py3", Lang::Python);
         extensions.insert("rs", Lang::Rust);
         extensions.insert("toml", Lang::Toml);
+        extensions.insert("js", Lang::JavaScript);
+        extensions.insert("ts", Lang::TypeScript);
 
         extensions
     }
@@ -76,6 +80,8 @@ impl Lang {
         comment_info.insert(Lang::Markdown, cpp_style_comment.clone());
         comment_info.insert(Lang::Rust, cpp_style_comment.clone());
         comment_info.insert(Lang::Toml, cpp_style_comment.clone());
+        comment_info.insert(Lang::JavaScript, cpp_style_comment.clone());
+        comment_info.insert(Lang::TypeScript, cpp_style_comment.clone());
 
         let py_style_comment = {
             let single_line = Arc::new(["#"]);
@@ -109,6 +115,8 @@ impl fmt::Display for Lang {
             Python => write!(f, "Python"),
             Rust => write!(f, "Rust"),
             Toml => write!(f, "TOML"),
+            JavaScript => write!(f, "JavaScript"),
+            TypeScript => write!(f, "TypeScript"),
 
             Total => write!(f, "TOTAL"),
         }
