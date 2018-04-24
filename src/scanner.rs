@@ -43,17 +43,18 @@ impl Scanner {
                 if let Some(ext) = path.extension() {
                     if let Some(ext) = ext.to_str() {
                         if let Some(lang) = extensions.get(&ext) {
-                            return Some((lang, path));
+                            let comment_info = comment_info.get(lang).unwrap();
+                            let counter = Counter::new(
+                                path.to_path_buf(),
+                                lang.clone(),
+                                comment_info.clone(),
+                            );
+                            return counter.count();
                         }
                     }
                 }
 
                 None
-            })
-            .filter_map(|(lang, path)| -> Option<Sloc> {
-                let comment_info = comment_info.get(lang).unwrap();
-                let counter = Counter::new(path.to_path_buf(), lang.clone(), comment_info.clone());
-                counter.count()
             })
             .collect();
 
