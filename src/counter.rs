@@ -77,38 +77,43 @@ impl Counter {
                                 }
                                 sloc.comments += 1;
                             } else {
-                                let is_comment = {
-                                    if self.comment_info.single_line.is_empty() {
-                                        false
-                                    } else {
-                                        self.comment_info
-                                            .single_line
-                                            .iter()
-                                            .filter(|a| line.starts_with(*a))
-                                            .count() >= 1
+                                let mut skip_single_line_check = false;
+                                for i in 0..self.comment_info.multi_line_start.len() {
+                                    if line.starts_with(self.comment_info.multi_line_start[i]) {
+                                        multi_line_comment = true;
+                                        multi_line_comment_index = i;
+                                        sloc.comments += 1;
                                     }
-                                };
 
-                                if is_comment {
-                                    sloc.comments += 1;
-                                } else {
-                                    for i in 0..self.comment_info.multi_line_start.len() {
-                                        if line.starts_with(self.comment_info.multi_line_start[i]) {
-                                            multi_line_comment = true;
-                                            multi_line_comment_index = i;
-                                            sloc.comments += 1;
+                                    if multi_line_comment {
+                                        if line.ends_with(
+                                            self.comment_info.multi_line_end
+                                                [multi_line_comment_index],
+                                        ) {
+                                            multi_line_comment = false;
+                                            skip_single_line_check = true;
                                         }
 
-                                        if multi_line_comment {
-                                            if line.ends_with(
-                                                self.comment_info.multi_line_end
-                                                    [multi_line_comment_index],
-                                            ) {
-                                                multi_line_comment = false;
-                                            }
+                                        break;
+                                    }
+                                }
 
-                                            break;
+                                if !multi_line_comment && !skip_single_line_check {
+                                    let is_comment = {
+                                        if self.comment_info.single_line.is_empty() {
+                                            false
+                                        } else {
+                                            self.comment_info
+                                                .single_line
+                                                .iter()
+                                                .filter(|a| line.starts_with(*a))
+                                                .count()
+                                                >= 1
                                         }
+                                    };
+
+                                    if is_comment {
+                                        sloc.comments += 1;
                                     }
                                 }
                             }
