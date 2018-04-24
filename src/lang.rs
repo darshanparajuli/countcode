@@ -1,4 +1,12 @@
 use std::fmt;
+use std::sync::Arc;
+
+#[derive(Clone)]
+pub struct CommentInfo {
+    pub single_line: Arc<[&'static str]>,
+    pub multi_line_start: Arc<[&'static str]>,
+    pub multi_line_end: Arc<[&'static str]>,
+}
 
 #[derive(Clone, Debug, Eq, PartialEq, Hash)]
 pub enum Lang {

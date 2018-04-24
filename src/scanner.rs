@@ -1,7 +1,7 @@
 use std::collections::HashSet;
 use std::collections::hash_map::{Entry, HashMap};
-use counter::{CommentInfo, Counter, Sloc, SlocStr};
-use lang::Lang;
+use counter::{Counter, Sloc, SlocStr};
+use lang::{CommentInfo, Lang};
 use walkdir::WalkDir;
 use std::sync::Arc;
 use rayon::prelude::*;

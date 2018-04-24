@@ -2,8 +2,7 @@ use std::path::PathBuf;
 use std::io::prelude::*;
 use std::io::BufReader;
 use std::fs::File;
-use std::sync::Arc;
-use lang::Lang;
+use lang::{CommentInfo, Lang};
 
 #[derive(Clone)]
 pub struct Sloc {
@@ -21,13 +20,6 @@ pub struct SlocStr {
     pub code: String,
     pub comments: String,
     pub blanks: String,
-}
-
-#[derive(Clone)]
-pub struct CommentInfo {
-    pub single_line: Arc<[&'static str]>,
-    pub multi_line_start: Arc<[&'static str]>,
-    pub multi_line_end: Arc<[&'static str]>,
 }
 
 impl Sloc {
