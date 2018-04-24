@@ -22,6 +22,7 @@ pub enum Lang {
     Html,
     Java,
     JavaScript,
+    Json,
     Kotlin,
     Lua,
     Markdown,
@@ -59,7 +60,9 @@ impl Lang {
         extensions.insert("hxx", Lang::CppHeader);
         extensions.insert("java", Lang::Java);
         extensions.insert("js", Lang::JavaScript);
+        extensions.insert("json", Lang::Json);
         extensions.insert("kt", Lang::Kotlin);
+        extensions.insert("lua", Lang::Lua);
         extensions.insert("md", Lang::Markdown);
         extensions.insert("pl", Lang::Perl);
         extensions.insert("py", Lang::Python);
@@ -68,9 +71,8 @@ impl Lang {
         extensions.insert("rs", Lang::Rust);
         extensions.insert("toml", Lang::Toml);
         extensions.insert("ts", Lang::TypeScript);
-        extensions.insert("yml", Lang::Yaml);
         extensions.insert("yaml", Lang::Yaml);
-        extensions.insert("lua", Lang::Lua);
+        extensions.insert("yml", Lang::Yaml);
 
         extensions
     }
@@ -188,6 +190,18 @@ impl Lang {
         };
         comment_info.insert(Lang::Lua, lua_style_comment);
 
+        let json_style_comment = {
+            let single_line = Arc::new([]);
+            let multi_line_start = Arc::new([]);
+            let multi_line_end = Arc::new([]);
+            CommentInfo {
+                single_line,
+                multi_line_start,
+                multi_line_end,
+            }
+        };
+        comment_info.insert(Lang::Json, json_style_comment);
+
         comment_info
     }
 }
@@ -207,6 +221,7 @@ impl fmt::Display for Lang {
             Html => write!(f, "HTML"),
             Java => write!(f, "Java"),
             JavaScript => write!(f, "JavaScript"),
+            Json => write!(f, "JSON"),
             Kotlin => write!(f, "Kotlin"),
             Lua => write!(f, "Lua"),
             Markdown => write!(f, "Markdown"),
