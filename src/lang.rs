@@ -16,6 +16,7 @@ pub enum Lang {
     Cpp,
     CppHeader,
     Css,
+    D,
     Go,
     Html,
     Java,
@@ -41,6 +42,8 @@ impl Lang {
         extensions.insert("cpp", Lang::Cpp);
         extensions.insert("css", Lang::Css);
         extensions.insert("cxx", Lang::Cpp);
+        extensions.insert("d", Lang::D);
+        extensions.insert("di", Lang::D);
         extensions.insert("go", Lang::Go);
         extensions.insert("h", Lang::CHeader);
         extensions.insert("h++", Lang::CppHeader);
@@ -82,6 +85,7 @@ impl Lang {
         comment_info.insert(Lang::Cpp, cpp_style_comment.clone());
         comment_info.insert(Lang::CppHeader, cpp_style_comment.clone());
         comment_info.insert(Lang::Css, cpp_style_comment.clone());
+        comment_info.insert(Lang::D, cpp_style_comment.clone());
         comment_info.insert(Lang::Go, cpp_style_comment.clone());
         comment_info.insert(Lang::Java, cpp_style_comment.clone());
         comment_info.insert(Lang::JavaScript, cpp_style_comment.clone());
@@ -140,6 +144,7 @@ impl fmt::Display for Lang {
             Cpp => write!(f, "C++"),
             CppHeader => write!(f, "Cpp Header"),
             Css => write!(f, "CSS"),
+            D => write!(f, "D"),
             Go => write!(f, "Go"),
             Html => write!(f, "HTML"),
             Java => write!(f, "Java"),
