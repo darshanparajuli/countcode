@@ -15,6 +15,7 @@ pub enum Lang {
     CHeader,
     Cpp,
     CppHeader,
+    Css,
     Go,
     Html,
     Java,
@@ -37,6 +38,7 @@ impl Lang {
         extensions.insert("c++", Lang::Cpp);
         extensions.insert("cc", Lang::Cpp);
         extensions.insert("cpp", Lang::Cpp);
+        extensions.insert("css", Lang::Css);
         extensions.insert("cxx", Lang::Cpp);
         extensions.insert("go", Lang::Go);
         extensions.insert("h", Lang::CHeader);
@@ -77,13 +79,14 @@ impl Lang {
         comment_info.insert(Lang::CHeader, cpp_style_comment.clone());
         comment_info.insert(Lang::Cpp, cpp_style_comment.clone());
         comment_info.insert(Lang::CppHeader, cpp_style_comment.clone());
+        comment_info.insert(Lang::Css, cpp_style_comment.clone());
         comment_info.insert(Lang::Go, cpp_style_comment.clone());
         comment_info.insert(Lang::Java, cpp_style_comment.clone());
+        comment_info.insert(Lang::JavaScript, cpp_style_comment.clone());
         comment_info.insert(Lang::Kotlin, cpp_style_comment.clone());
         comment_info.insert(Lang::Markdown, cpp_style_comment.clone());
         comment_info.insert(Lang::Rust, cpp_style_comment.clone());
         comment_info.insert(Lang::Toml, cpp_style_comment.clone());
-        comment_info.insert(Lang::JavaScript, cpp_style_comment.clone());
         comment_info.insert(Lang::TypeScript, cpp_style_comment.clone());
 
         let py_style_comment = {
@@ -122,6 +125,7 @@ impl fmt::Display for Lang {
             CHeader => write!(f, "C Header"),
             Cpp => write!(f, "C++"),
             CppHeader => write!(f, "Cpp Header"),
+            Css => write!(f, "CSS"),
             Go => write!(f, "Go"),
             Html => write!(f, "HTML"),
             Java => write!(f, "Java"),
