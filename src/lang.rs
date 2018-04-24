@@ -18,6 +18,7 @@ pub enum Lang {
     Css,
     D,
     Go,
+    Haskell,
     Html,
     Java,
     JavaScript,
@@ -51,6 +52,7 @@ impl Lang {
         extensions.insert("h++", Lang::CppHeader);
         extensions.insert("hh", Lang::CppHeader);
         extensions.insert("hpp", Lang::CppHeader);
+        extensions.insert("hs", Lang::Haskell);
         extensions.insert("htm", Lang::Html);
         extensions.insert("html", Lang::Html);
         extensions.insert("hxx", Lang::CppHeader);
@@ -160,6 +162,18 @@ impl Lang {
         };
         comment_info.insert(Lang::Yaml, yaml_style_comment);
 
+        let haskell_style_comment = {
+            let single_line = Arc::new(["--"]);
+            let multi_line_start = Arc::new(["{-"]);
+            let multi_line_end = Arc::new(["-}"]);
+            CommentInfo {
+                single_line,
+                multi_line_start,
+                multi_line_end,
+            }
+        };
+        comment_info.insert(Lang::Haskell, haskell_style_comment);
+
         comment_info
     }
 }
@@ -175,6 +189,7 @@ impl fmt::Display for Lang {
             Css => write!(f, "CSS"),
             D => write!(f, "D"),
             Go => write!(f, "Go"),
+            Haskell => write!(f, "Haskell"),
             Html => write!(f, "HTML"),
             Java => write!(f, "Java"),
             JavaScript => write!(f, "JavaScript"),
