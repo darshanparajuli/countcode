@@ -3,14 +3,41 @@ use std::io::prelude::*;
 use std::io::BufReader;
 use std::fs::File;
 use lang::{CommentInfo, Lang};
+use std::ops::AddAssign;
+
+#[derive(Clone)]
+pub struct Stats {
+    pub files: u64,
+    pub lines: u64,
+    pub code: u64,
+    pub comments: u64,
+    pub blanks: u64,
+}
+
+impl AddAssign for Stats {
+    fn add_assign(&mut self, rhs: Stats) {
+        self.files += rhs.files;
+        self.lines += rhs.lines;
+        self.comments += rhs.comments;
+        self.code += rhs.code;
+        self.blanks += rhs.blanks;
+    }
+}
+
+impl<'a> AddAssign<&'a Stats> for Stats {
+    fn add_assign(&mut self, rhs: &'a Stats) {
+        self.files += rhs.files;
+        self.lines += rhs.lines;
+        self.comments += rhs.comments;
+        self.code += rhs.code;
+        self.blanks += rhs.blanks;
+    }
+}
 
 #[derive(Clone)]
 pub struct Sloc {
     pub lang: Lang,
-    pub files: u64,
-    pub lines: u64,
-    pub comments: u64,
-    pub blanks: u64,
+    pub stats: Stats,
 }
 
 pub struct SlocStr {
@@ -26,10 +53,13 @@ impl Sloc {
     pub fn new(lang: Lang) -> Self {
         Self {
             lang,
-            files: 0,
-            lines: 0,
-            comments: 0,
-            blanks: 0,
+            stats: Stats {
+                files: 0,
+                lines: 0,
+                code: 0,
+                comments: 0,
+                blanks: 0,
+            },
         }
     }
 }
@@ -54,17 +84,17 @@ impl Counter {
             Ok(f) => {
                 let mut reader = BufReader::new(f);
                 let mut sloc = Sloc::new(self.lang.clone());
-                sloc.files = 1;
+                sloc.stats.files = 1;
                 let mut multi_line_comment = false;
                 let mut multi_line_comment_index = 0;
                 for line in reader.lines() {
                     match line {
                         Ok(line) => {
                             let line = line.trim();
-                            sloc.lines += 1;
+                            sloc.stats.lines += 1;
 
                             if line.is_empty() {
-                                sloc.blanks += 1;
+                                sloc.stats.blanks += 1;
                                 continue;
                             }
 
@@ -75,14 +105,14 @@ impl Counter {
                                     multi_line_comment = false;
                                     multi_line_comment_index = 0;
                                 }
-                                sloc.comments += 1;
+                                sloc.stats.comments += 1;
                             } else {
                                 let mut skip_single_line_check = false;
                                 for i in 0..self.comment_info.multi_line_start.len() {
                                     if line.starts_with(self.comment_info.multi_line_start[i]) {
                                         multi_line_comment = true;
                                         multi_line_comment_index = i;
-                                        sloc.comments += 1;
+                                        sloc.stats.comments += 1;
                                     }
 
                                     if multi_line_comment {
@@ -113,7 +143,7 @@ impl Counter {
                                     };
 
                                     if is_comment {
-                                        sloc.comments += 1;
+                                        sloc.stats.comments += 1;
                                     }
                                 }
                             }
@@ -123,6 +153,7 @@ impl Counter {
                         }
                     }
                 }
+                sloc.stats.code = sloc.stats.lines - sloc.stats.comments - sloc.stats.blanks;
                 Some(sloc)
             }
             Err(_) => None,

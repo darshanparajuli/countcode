@@ -62,11 +62,7 @@ impl Scanner {
         for sloc in count_result {
             match sloc_map.entry(sloc.lang.clone()) {
                 Entry::Occupied(ref mut e) => {
-                    let mut s = e.get_mut();
-                    s.files += sloc.files;
-                    s.lines += sloc.lines;
-                    s.comments += sloc.comments;
-                    s.blanks += sloc.blanks;
+                    e.get_mut().stats += sloc.stats;
                 }
                 Entry::Vacant(e) => {
                     e.insert(sloc);
@@ -75,24 +71,21 @@ impl Scanner {
         }
 
         let mut sloc: Vec<_> = sloc_map.iter().map(|(_, v)| v.clone()).collect();
-        sloc.sort_by(|a, b| a.lines.cmp(&b.lines).reverse());
+        sloc.sort_by(|a, b| a.stats.lines.cmp(&b.stats.lines).reverse());
         let mut total = Sloc::new(Lang::Total);
         for s in &sloc {
-            total.files += s.files;
-            total.lines += s.lines;
-            total.comments += s.comments;
-            total.blanks += s.blanks;
+            total.stats += &s.stats;
         }
         sloc.push(total);
 
         sloc.iter()
             .map(|s| SlocStr {
                 lang: format!("{}", s.lang),
-                files: format!("{}", s.files),
-                lines: format!("{}", s.lines),
-                code: format!("{}", (s.lines - s.comments - s.blanks)),
-                comments: format!("{}", s.comments),
-                blanks: format!("{}", s.blanks),
+                files: format!("{}", s.stats.files),
+                lines: format!("{}", s.stats.lines),
+                code: format!("{}", s.stats.code),
+                comments: format!("{}", s.stats.comments),
+                blanks: format!("{}", s.stats.blanks),
             })
             .collect()
     }
