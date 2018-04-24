@@ -27,6 +27,7 @@ pub enum Lang {
     Lua,
     Markdown,
     Perl,
+    PlainText,
     Python,
     Ruby,
     Rust,
@@ -72,6 +73,7 @@ impl Lang {
         extensions.insert("rs", Lang::Rust);
         extensions.insert("toml", Lang::Toml);
         extensions.insert("ts", Lang::TypeScript);
+        extensions.insert("txt", Lang::PlainText);
         extensions.insert("xml", Lang::Xml);
         extensions.insert("yaml", Lang::Yaml);
         extensions.insert("yml", Lang::Yaml);
@@ -205,6 +207,18 @@ impl Lang {
         };
         comment_info.insert(Lang::Json, json_style_comment);
 
+        let plain_txt_style_comment = {
+            let single_line = Arc::new([]);
+            let multi_line_start = Arc::new([]);
+            let multi_line_end = Arc::new([]);
+            CommentInfo {
+                single_line,
+                multi_line_start,
+                multi_line_end,
+            }
+        };
+        comment_info.insert(Lang::PlainText, plain_txt_style_comment);
+
         comment_info
     }
 }
@@ -229,6 +243,7 @@ impl fmt::Display for Lang {
             Lua => write!(f, "Lua"),
             Markdown => write!(f, "Markdown"),
             Perl => write!(f, "Perl"),
+            PlainText => write!(f, "Plain Text"),
             Python => write!(f, "Python"),
             Ruby => write!(f, "Ruby"),
             Rust => write!(f, "Rust"),
