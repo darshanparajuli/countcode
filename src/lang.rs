@@ -233,7 +233,7 @@ impl fmt::Display for Lang {
             C => write!(f, "C"),
             CHeader => write!(f, "C Header"),
             Cpp => write!(f, "C++"),
-            CppHeader => write!(f, "Cpp Header"),
+            CppHeader => write!(f, "C++ Header"),
             Css => write!(f, "CSS"),
             D => write!(f, "D"),
             Go => write!(f, "Go"),
