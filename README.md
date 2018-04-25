@@ -14,6 +14,7 @@ A simple program for counting SLOC very quickly. The design of the program's out
 * C/C++
 * CSS
 * D
+* F#
 * Go
 * HTML
 * Haskell

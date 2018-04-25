@@ -18,6 +18,7 @@ pub enum Lang {
     CppHeader,
     Css,
     D,
+    FSharp,
     Go,
     Haskell,
     Html,
@@ -55,6 +56,7 @@ impl Lang {
         extensions.insert("cxx", Lang::Cpp);
         extensions.insert("d", Lang::D);
         extensions.insert("di", Lang::D);
+        extensions.insert("fs", Lang::FSharp);
         extensions.insert("go", Lang::Go);
         extensions.insert("h", Lang::CHeader);
         extensions.insert("h++", Lang::CppHeader);
@@ -226,6 +228,18 @@ impl Lang {
         };
         comment_info.insert(Lang::PlainText, plain_txt_style_comment);
 
+        let fs_style_comment = {
+            let single_line = Arc::new(["//"]);
+            let multi_line_start = Arc::new(["(*"]);
+            let multi_line_end = Arc::new(["*)"]);
+            CommentInfo {
+                single_line,
+                multi_line_start,
+                multi_line_end,
+            }
+        };
+        comment_info.insert(Lang::FSharp, fs_style_comment);
+
         comment_info
     }
 }
@@ -241,6 +255,7 @@ impl fmt::Display for Lang {
             CppHeader => write!(f, "C++ Header"),
             Css => write!(f, "CSS"),
             D => write!(f, "D"),
+            FSharp => write!(f, "F#"),
             Go => write!(f, "Go"),
             Haskell => write!(f, "Haskell"),
             Html => write!(f, "HTML"),
