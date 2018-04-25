@@ -10,6 +10,7 @@ A simple program for counting SLOC very quickly. The design of the program's out
 
 ## Supported File Types
 
+* Assembly
 * C#
 * C/C++
 * CSS

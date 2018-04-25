@@ -11,6 +11,7 @@ pub struct CommentInfo {
 
 #[derive(Clone, Debug, Eq, PartialEq, Hash)]
 pub enum Lang {
+    Asm,
     C,
     CHeader,
     Cpp,
@@ -46,6 +47,9 @@ impl Lang {
     pub fn extensions() -> HashMap<&'static str, Lang> {
         let mut extensions = HashMap::new();
 
+        extensions.insert("s", Lang::Asm);
+        extensions.insert("S", Lang::Asm);
+        extensions.insert("asm", Lang::Asm);
         extensions.insert("C", Lang::Cpp);
         extensions.insert("c", Lang::C);
         extensions.insert("c++", Lang::Cpp);
@@ -240,6 +244,18 @@ impl Lang {
         };
         comment_info.insert(Lang::FSharp, fs_style_comment);
 
+        let asm_style_comment = {
+            let single_line = Arc::new([";", "#", "@", "//"]);
+            let multi_line_start = Arc::new(["/*"]);
+            let multi_line_end = Arc::new(["*/"]);
+            CommentInfo {
+                single_line,
+                multi_line_start,
+                multi_line_end,
+            }
+        };
+        comment_info.insert(Lang::Asm, asm_style_comment);
+
         comment_info
     }
 }
@@ -248,6 +264,7 @@ impl fmt::Display for Lang {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         use self::Lang::*;
         match *self {
+            Asm => write!(f, "Assembly"),
             C => write!(f, "C"),
             CHeader => write!(f, "C Header"),
             CSharp => write!(f, "C#"),
