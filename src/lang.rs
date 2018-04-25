@@ -44,6 +44,7 @@ impl Lang {
     pub fn extensions() -> HashMap<&'static str, Lang> {
         let mut extensions = HashMap::new();
 
+        extensions.insert("C", Lang::Cpp);
         extensions.insert("c", Lang::C);
         extensions.insert("c++", Lang::Cpp);
         extensions.insert("cc", Lang::Cpp);
