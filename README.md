@@ -10,15 +10,16 @@ A simple program for counting SLOC very quickly. The design of the program's out
 
 ## Supported File Types
 
+* C#
 * C/C++
 * CSS
 * D
 * Go
-* Haskell
 * HTML
+* Haskell
+* JSON
 * Java
 * JavaScript
-* JSON
 * Kotlin
 * Lua
 * Makefile

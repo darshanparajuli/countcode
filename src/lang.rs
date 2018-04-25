@@ -14,6 +14,7 @@ pub enum Lang {
     C,
     CHeader,
     Cpp,
+    CSharp,
     CppHeader,
     Css,
     D,
@@ -49,6 +50,7 @@ impl Lang {
         extensions.insert("c++", Lang::Cpp);
         extensions.insert("cc", Lang::Cpp);
         extensions.insert("cpp", Lang::Cpp);
+        extensions.insert("cs", Lang::CSharp);
         extensions.insert("css", Lang::Css);
         extensions.insert("cxx", Lang::Cpp);
         extensions.insert("d", Lang::D);
@@ -100,6 +102,7 @@ impl Lang {
 
         comment_info.insert(Lang::C, cpp_style_comment.clone());
         comment_info.insert(Lang::CHeader, cpp_style_comment.clone());
+        comment_info.insert(Lang::CSharp, cpp_style_comment.clone());
         comment_info.insert(Lang::Cpp, cpp_style_comment.clone());
         comment_info.insert(Lang::CppHeader, cpp_style_comment.clone());
         comment_info.insert(Lang::Css, cpp_style_comment.clone());
@@ -233,6 +236,7 @@ impl fmt::Display for Lang {
         match *self {
             C => write!(f, "C"),
             CHeader => write!(f, "C Header"),
+            CSharp => write!(f, "C#"),
             Cpp => write!(f, "C++"),
             CppHeader => write!(f, "C++ Header"),
             Css => write!(f, "CSS"),
