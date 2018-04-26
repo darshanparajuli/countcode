@@ -8,7 +8,6 @@ use ignore::Walk;
 pub struct Scanner {
     extensions: HashMap<&'static str, Lang>,
     comment_info: HashMap<Lang, CommentInfo>,
-    ignore_files: HashSet<String>,
 }
 
 impl Scanner {
@@ -17,7 +16,6 @@ impl Scanner {
         let comment_info = Lang::comment_info();
         Self {
             extensions,
-            ignore_files: HashSet::new(),
             comment_info,
         }
     }
@@ -95,9 +93,5 @@ impl Scanner {
                 blanks: format!("{}", s.stats.blanks),
             })
             .collect()
-    }
-
-    pub fn ignore_file(&mut self, file_name: &str) {
-        self.ignore_files.insert(file_name.into());
     }
 }

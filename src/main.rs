@@ -20,8 +20,6 @@ fn main() {
     let args: HashSet<_> = args.drain(..).collect();
 
     let mut scanner = Scanner::new();
-    scanner.ignore_file(".git");
-
     let slocs = scanner.scan(args);
     pretty_print(slocs);
 }
