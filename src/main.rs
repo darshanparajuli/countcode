@@ -9,6 +9,7 @@ use std::env;
 use scanner::Scanner;
 use counter::SlocStr;
 use std::collections::HashSet;
+use std::io::{self, Write};
 
 fn main() {
     let mut args: Vec<_> = env::args().skip(1).collect();
@@ -62,12 +63,12 @@ fn pretty_print(slocs: Vec<SlocStr>) {
 
     let total_len = lang_len + files_len + lines_len + code_len + comments_len + blanks_len;
     for _ in 0..total_len + 7 {
-        print!("=");
+        print_safe("=");
     }
-    println!();
+    print_safe("\n");
 
-    println!(
-        " {:<w0$} {:>w1$} {:>w2$} {:>w3$} {:>w4$} {:>w5$} ",
+    print_safe(&format!(
+        " {:<w0$} {:>w1$} {:>w2$} {:>w3$} {:>w4$} {:>w5$} \n",
         "Language",
         "Files",
         "Lines",
@@ -80,17 +81,17 @@ fn pretty_print(slocs: Vec<SlocStr>) {
         w3 = code_len,
         w4 = comments_len,
         w5 = blanks_len,
-    );
+    ));
 
     for _ in 0..total_len + 7 {
-        print!("-");
+        print_safe("-");
     }
-    println!();
+    print_safe("\n");
 
     let len = slocs.len();
     for sloc in slocs.iter().take(len - 1) {
-        println!(
-            " {:<w0$} {:>w1$} {:>w2$} {:>w3$} {:>w4$} {:>w5$} ",
+        print_safe(&format!(
+            " {:<w0$} {:>w1$} {:>w2$} {:>w3$} {:>w4$} {:>w5$} \n",
             sloc.lang,
             sloc.files,
             sloc.lines,
@@ -103,17 +104,17 @@ fn pretty_print(slocs: Vec<SlocStr>) {
             w3 = code_len,
             w4 = comments_len,
             w5 = blanks_len,
-        );
+        ));
     }
 
     for _ in 0..total_len + 7 {
-        print!("=");
+        print_safe("=");
     }
-    println!();
+    print_safe("\n");
 
     let sloc = slocs.get(len - 1).unwrap();
-    println!(
-        " {:<w0$} {:>w1$} {:>w2$} {:>w3$} {:>w4$} {:>w5$} ",
+    print_safe(&format!(
+        " {:<w0$} {:>w1$} {:>w2$} {:>w3$} {:>w4$} {:>w5$} \n",
         sloc.lang,
         sloc.files,
         sloc.lines,
@@ -126,10 +127,19 @@ fn pretty_print(slocs: Vec<SlocStr>) {
         w3 = code_len,
         w4 = comments_len,
         w5 = blanks_len,
-    );
+    ));
 
     for _ in 0..total_len + 7 {
-        print!("=");
+        print_safe("=");
     }
-    println!();
+    print_safe("\n");
+}
+
+fn print_safe(s: &str) {
+    match io::stdout().write(s.as_bytes()) {
+        Ok(_) => {}
+        Err(_) => {
+            std::process::exit(0);
+        }
+    }
 }
