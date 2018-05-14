@@ -1,9 +1,9 @@
-use std::collections::HashSet;
-use std::collections::hash_map::{Entry, HashMap};
 use counter::{Counter, Sloc, SlocStr};
+use ignore::Walk;
 use lang::{CommentInfo, Lang};
 use rayon::prelude::*;
-use ignore::Walk;
+use std::collections::HashSet;
+use std::collections::hash_map::{Entry, HashMap};
 
 pub struct Scanner {
     extensions: HashMap<&'static str, Lang>,
