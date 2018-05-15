@@ -5,10 +5,10 @@ mod counter;
 mod lang;
 mod scanner;
 
-use std::env;
-use scanner::Scanner;
 use counter::SlocStr;
+use scanner::Scanner;
 use std::collections::HashSet;
+use std::env;
 use std::io::{self, Write};
 
 fn main() {

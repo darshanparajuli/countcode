@@ -1,6 +1,6 @@
+use std::collections::HashMap;
 use std::fmt;
 use std::sync::Arc;
-use std::collections::HashMap;
 
 #[derive(Clone)]
 pub struct CommentInfo {
