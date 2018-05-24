@@ -58,7 +58,7 @@ impl Scanner {
                     Some(lang) => {
                         let comment_info = comment_info.get(lang).unwrap();
                         let counter = Counter::new(&path, lang.clone(), comment_info.clone());
-                        return counter.count();
+                        counter.count()
                     }
                     None => None,
                 }
