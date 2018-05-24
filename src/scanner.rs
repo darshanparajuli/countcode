@@ -54,12 +54,14 @@ impl Scanner {
                     }
                 };
 
-                if let Some(lang) = lang {
-                    let comment_info = comment_info.get(lang).unwrap();
-                    let counter = Counter::new(&path, lang.clone(), comment_info.clone());
-                    return counter.count();
+                match lang {
+                    Some(lang) => {
+                        let comment_info = comment_info.get(lang).unwrap();
+                        let counter = Counter::new(&path, lang.clone(), comment_info.clone());
+                        return counter.count();
+                    }
+                    None => None,
                 }
-                None
             })
             .collect();
 
