@@ -2,8 +2,8 @@ use counter::{Counter, Sloc, SlocStr};
 use ignore::Walk;
 use lang::{CommentInfo, Lang};
 use rayon::prelude::*;
-use std::collections::HashSet;
 use std::collections::hash_map::{Entry, HashMap};
+use std::collections::HashSet;
 
 pub struct Scanner {
     extensions: HashMap<&'static str, Lang>,
@@ -35,14 +35,16 @@ impl Scanner {
             .filter_map(|entry| {
                 let path = entry.path();
                 let lang = {
-                    let lang = path.extension()
+                    let lang = path
+                        .extension()
                         .and_then(|e| e.to_str())
                         .and_then(|e| extensions.get(e));
 
                     if let Some(lang) = lang {
                         Some(lang)
                     } else {
-                        let is_mkfile = path.file_name()
+                        let is_mkfile = path
+                            .file_name()
                             .and_then(|e| e.to_str())
                             .map_or(false, |e| e.to_lowercase() == "makefile");
 
@@ -62,8 +64,7 @@ impl Scanner {
                     }
                     None => None,
                 }
-            })
-            .collect();
+            }).collect();
 
         let mut sloc_map: HashMap<Lang, Sloc> = HashMap::new();
         for sloc in count_result {
@@ -93,7 +94,6 @@ impl Scanner {
                 code: format!("{}", s.stats.code),
                 comments: format!("{}", s.stats.comments),
                 blanks: format!("{}", s.stats.blanks),
-            })
-            .collect()
+            }).collect()
     }
 }

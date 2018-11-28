@@ -1,7 +1,7 @@
 use lang::{CommentInfo, Lang};
 use std::fs::File;
-use std::io::BufReader;
 use std::io::prelude::*;
+use std::io::BufReader;
 use std::ops::AddAssign;
 use std::path::Path;
 
@@ -108,9 +108,9 @@ impl<'a> Counter<'a> {
                     }
 
                     if multi_line_comment {
-                        if line.ends_with(
-                            self.comment_info.multi_line_end[multi_line_comment_index],
-                        ) {
+                        if line
+                            .ends_with(self.comment_info.multi_line_end[multi_line_comment_index])
+                        {
                             multi_line_comment = false;
                             multi_line_comment_index = 0;
                         }
@@ -145,7 +145,8 @@ impl<'a> Counter<'a> {
                                         .single_line
                                         .iter()
                                         .filter(|a| line.starts_with(*a))
-                                        .count() >= 1
+                                        .count()
+                                        >= 1
                                 }
                             };
 
