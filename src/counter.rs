@@ -3,6 +3,7 @@ use memmap::Mmap;
 use std::fs::File;
 use std::ops::AddAssign;
 use std::path::Path;
+use std::str;
 
 #[derive(Clone)]
 pub struct Stats {
@@ -63,11 +64,56 @@ impl Sloc {
     }
 }
 
+struct LineReader<'a> {
+    mmap: &'a [u8],
+    next_index: usize,
+}
+
+impl<'a> LineReader<'a> {
+    fn new(mmap: &'a [u8]) -> Self {
+        Self {
+            mmap,
+            next_index: 0,
+        }
+    }
+
+    fn read_line(&mut self) -> Option<&'a str> {
+        let starting_index = self.next_index;
+        let mut end_index = self.next_index;
+
+        let length = self.mmap.len();
+        while end_index < length {
+            match self.mmap[end_index] {
+                b'\r' => {
+                    self.next_index = end_index + 1;
+                    if self.next_index < length {
+                        if self.mmap[self.next_index] == b'\n' {
+                            self.next_index += 1;
+                        }
+                    }
+
+                    return str::from_utf8(&self.mmap[starting_index..end_index]).ok();
+                }
+
+                b'\n' => {
+                    self.next_index = end_index + 1;
+                    return str::from_utf8(&self.mmap[starting_index..end_index]).ok();
+                }
+
+                _ => {
+                    end_index += 1;
+                }
+            }
+        }
+
+        None
+    }
+}
+
 pub struct Counter<'a> {
     path: &'a Path,
     lang: Lang,
     comment_info: CommentInfo,
-    next_index: usize,
 }
 
 impl<'a> Counter<'a> {
@@ -76,41 +122,7 @@ impl<'a> Counter<'a> {
             path,
             lang,
             comment_info,
-            next_index: 0,
         }
-    }
-
-    fn read_line(&mut self, mmap: &[u8]) -> Option<String> {
-        let starting_index = self.next_index;
-        let mut end_index = self.next_index;
-
-        while end_index < mmap.len() {
-            match mmap[end_index] {
-                b'\r' => {
-                    self.next_index = end_index + 1;
-                    if self.next_index < mmap.len() {
-                        if mmap[self.next_index] == b'\n' {
-                            self.next_index += 1;
-                        }
-                    }
-
-                    return Some(
-                        String::from_utf8_lossy(&mmap[starting_index..end_index]).to_string(),
-                    );
-                }
-                b'\n' => {
-                    self.next_index = end_index + 1;
-                    return Some(
-                        String::from_utf8_lossy(&mmap[starting_index..end_index]).to_string(),
-                    );
-                }
-                _ => {
-                    end_index += 1;
-                }
-            }
-        }
-
-        None
     }
 
     pub fn count(&mut self) -> Option<Sloc> {
@@ -123,6 +135,7 @@ impl<'a> Counter<'a> {
                     }
                 };
 
+                let mut line_reader = LineReader::new(&mmap);
                 let mut sloc = Sloc::new(self.lang.clone());
                 sloc.stats.files = 1;
 
@@ -130,7 +143,7 @@ impl<'a> Counter<'a> {
                 let mut multi_line_comment_index = 0;
 
                 loop {
-                    let mut line = match self.read_line(&mmap) {
+                    let mut line = match line_reader.read_line() {
                         Some(line) => line,
                         None => break,
                     };
