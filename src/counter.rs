@@ -1,7 +1,6 @@
 use lang::{CommentInfo, Lang};
+use memmap::Mmap;
 use std::fs::File;
-use std::io::prelude::*;
-use std::io::BufReader;
 use std::ops::AddAssign;
 use std::path::Path;
 
@@ -68,6 +67,7 @@ pub struct Counter<'a> {
     path: &'a Path,
     lang: Lang,
     comment_info: CommentInfo,
+    next_index: usize,
 }
 
 impl<'a> Counter<'a> {
@@ -76,28 +76,64 @@ impl<'a> Counter<'a> {
             path,
             lang,
             comment_info,
+            next_index: 0,
         }
     }
 
-    pub fn count(&self) -> Option<Sloc> {
+    fn read_line(&mut self, mmap: &[u8]) -> Option<String> {
+        let starting_index = self.next_index;
+        let mut end_index = self.next_index;
+
+        while end_index < mmap.len() {
+            match mmap[end_index] {
+                b'\r' => {
+                    self.next_index = end_index + 1;
+                    if self.next_index < mmap.len() {
+                        if mmap[self.next_index] == b'\n' {
+                            self.next_index += 1;
+                        }
+                    }
+
+                    return Some(
+                        String::from_utf8_lossy(&mmap[starting_index..end_index]).to_string(),
+                    );
+                }
+                b'\n' => {
+                    self.next_index = end_index + 1;
+                    return Some(
+                        String::from_utf8_lossy(&mmap[starting_index..end_index]).to_string(),
+                    );
+                }
+                _ => {
+                    end_index += 1;
+                }
+            }
+        }
+
+        None
+    }
+
+    pub fn count(&mut self) -> Option<Sloc> {
         match File::open(&self.path) {
             Ok(f) => {
+                let mmap = match unsafe { Mmap::map(&f) } {
+                    Ok(mmap) => mmap,
+                    Err(_) => {
+                        return None;
+                    }
+                };
+
                 let mut sloc = Sloc::new(self.lang.clone());
                 sloc.stats.files = 1;
 
-                let mut reader = BufReader::new(f);
                 let mut multi_line_comment = false;
                 let mut multi_line_comment_index = 0;
-                let mut line = String::new();
 
                 loop {
-                    line.clear();
-                    match reader.read_line(&mut line) {
-                        Ok(n) => if n == 0 {
-                            break;
-                        },
-                        Err(_) => break,
-                    }
+                    let mut line = match self.read_line(&mmap) {
+                        Some(line) => line,
+                        None => break,
+                    };
 
                     let line = line.trim();
                     sloc.stats.lines += 1;

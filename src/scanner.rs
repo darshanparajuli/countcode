@@ -59,7 +59,7 @@ impl Scanner {
                 match lang {
                     Some(lang) => {
                         let comment_info = comment_info.get(lang).unwrap();
-                        let counter = Counter::new(&path, lang.clone(), comment_info.clone());
+                        let mut counter = Counter::new(&path, lang.clone(), comment_info.clone());
                         counter.count()
                     }
                     None => None,

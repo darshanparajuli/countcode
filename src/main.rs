@@ -1,4 +1,5 @@
 extern crate ignore;
+extern crate memmap;
 extern crate rayon;
 
 mod counter;
