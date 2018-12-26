@@ -30,6 +30,7 @@ pub enum Lang {
     Lua,
     Makefile,
     Markdown,
+    ObjectiveC,
     Perl,
     PlainText,
     Python,
@@ -75,6 +76,7 @@ impl Lang {
         extensions.insert("json", Lang::Json);
         extensions.insert("kt", Lang::Kotlin);
         extensions.insert("lua", Lang::Lua);
+        extensions.insert("m", Lang::ObjectiveC);
         extensions.insert("mk", Lang::Makefile);
         extensions.insert("md", Lang::Markdown);
         extensions.insert("pl", Lang::Perl);
@@ -121,6 +123,7 @@ impl Lang {
         comment_info.insert(Lang::Rust, cpp_style_comment.clone());
         comment_info.insert(Lang::Toml, cpp_style_comment.clone());
         comment_info.insert(Lang::TypeScript, cpp_style_comment.clone());
+        comment_info.insert(Lang::ObjectiveC, cpp_style_comment.clone());
 
         let py_style_comment = {
             let single_line = Arc::new(["#"]);
@@ -292,6 +295,7 @@ impl fmt::Display for Lang {
             TypeScript => write!(f, "TypeScript"),
             Xml => write!(f, "XML"),
             Yaml => write!(f, "YAML"),
+            ObjectiveC => write!(f, "Objective C"),
 
             Total => write!(f, "TOTAL"),
         }
