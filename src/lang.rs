@@ -36,6 +36,7 @@ pub enum Lang {
     Python,
     Ruby,
     Rust,
+    Swift,
     Toml,
     TypeScript,
     Xml,
@@ -84,6 +85,7 @@ impl Lang {
         extensions.insert("py3", Lang::Python);
         extensions.insert("rb", Lang::Ruby);
         extensions.insert("rs", Lang::Rust);
+        extensions.insert("swift", Lang::Swift);
         extensions.insert("toml", Lang::Toml);
         extensions.insert("ts", Lang::TypeScript);
         extensions.insert("txt", Lang::PlainText);
@@ -124,6 +126,7 @@ impl Lang {
         comment_info.insert(Lang::Toml, cpp_style_comment.clone());
         comment_info.insert(Lang::TypeScript, cpp_style_comment.clone());
         comment_info.insert(Lang::ObjectiveC, cpp_style_comment.clone());
+        comment_info.insert(Lang::Swift, cpp_style_comment.clone());
 
         let py_style_comment = {
             let single_line = Arc::new(["#"]);
@@ -291,6 +294,7 @@ impl fmt::Display for Lang {
             Python => write!(f, "Python"),
             Ruby => write!(f, "Ruby"),
             Rust => write!(f, "Rust"),
+            Swift => write!(f, "Swift"),
             Toml => write!(f, "TOML"),
             TypeScript => write!(f, "TypeScript"),
             Xml => write!(f, "XML"),
