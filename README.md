@@ -26,11 +26,13 @@ A simple program for counting SLOC very quickly. The design of the program's out
 * Lua
 * Makefile
 * Markdown
+* Objective C
 * Perl
 * Plain Text
 * Python
 * Ruby
 * Rust
+* Swift
 * TOML
 * TypeScript
 * XML
