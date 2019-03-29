@@ -10,7 +10,7 @@ use counter::SlocStr;
 use scanner::Scanner;
 use std::collections::HashSet;
 use std::env;
-use std::io::{self, Write};
+use std::io::{self, StdoutLock, Write};
 
 fn main() {
     let mut args: Vec<_> = env::args().skip(1).collect();
@@ -62,36 +62,70 @@ fn pretty_print(slocs: Vec<SlocStr>) {
     comments_len += 1;
     blanks_len += 1;
 
+    let stdout = io::stdout();
+    let mut stdout_handle = stdout.lock();
+
     let total_len = lang_len + files_len + lines_len + code_len + comments_len + blanks_len;
     for _ in 0..total_len + 7 {
-        print_safe("=");
+        print_safe(&mut stdout_handle, "=");
     }
-    print_safe("\n");
+    print_safe(&mut stdout_handle, "\n");
 
-    print_safe(&format!(
-        " {:<w0$} {:>w1$} {:>w2$} {:>w3$} {:>w4$} {:>w5$} \n",
-        "Language",
-        "Files",
-        "Lines",
-        "Code",
-        "Comments",
-        "Blanks",
-        w0 = lang_len,
-        w1 = files_len,
-        w2 = lines_len,
-        w3 = code_len,
-        w4 = comments_len,
-        w5 = blanks_len,
-    ));
+    print_safe(
+        &mut stdout_handle,
+        &format!(
+            " {:<w0$} {:>w1$} {:>w2$} {:>w3$} {:>w4$} {:>w5$} \n",
+            "Language",
+            "Files",
+            "Lines",
+            "Code",
+            "Comments",
+            "Blanks",
+            w0 = lang_len,
+            w1 = files_len,
+            w2 = lines_len,
+            w3 = code_len,
+            w4 = comments_len,
+            w5 = blanks_len,
+        ),
+    );
 
     for _ in 0..total_len + 7 {
-        print_safe("-");
+        print_safe(&mut stdout_handle, "-");
     }
-    print_safe("\n");
+    print_safe(&mut stdout_handle, "\n");
 
     let len = slocs.len();
     for sloc in slocs.iter().take(len - 1) {
-        print_safe(&format!(
+        print_safe(
+            &mut stdout_handle,
+            &format!(
+                " {:<w0$} {:>w1$} {:>w2$} {:>w3$} {:>w4$} {:>w5$} \n",
+                sloc.lang,
+                sloc.files,
+                sloc.lines,
+                sloc.code,
+                sloc.comments,
+                sloc.blanks,
+                w0 = lang_len,
+                w1 = files_len,
+                w2 = lines_len,
+                w3 = code_len,
+                w4 = comments_len,
+                w5 = blanks_len,
+            ),
+        );
+    }
+
+    for _ in 0..total_len + 7 {
+        print_safe(&mut stdout_handle, "=");
+    }
+    print_safe(&mut stdout_handle, "\n");
+
+    let sloc = slocs.get(len - 1).unwrap();
+    print_safe(
+        &mut stdout_handle,
+        &format!(
             " {:<w0$} {:>w1$} {:>w2$} {:>w3$} {:>w4$} {:>w5$} \n",
             sloc.lang,
             sloc.files,
@@ -105,39 +139,17 @@ fn pretty_print(slocs: Vec<SlocStr>) {
             w3 = code_len,
             w4 = comments_len,
             w5 = blanks_len,
-        ));
-    }
+        ),
+    );
 
     for _ in 0..total_len + 7 {
-        print_safe("=");
+        print_safe(&mut stdout_handle, "=");
     }
-    print_safe("\n");
-
-    let sloc = slocs.get(len - 1).unwrap();
-    print_safe(&format!(
-        " {:<w0$} {:>w1$} {:>w2$} {:>w3$} {:>w4$} {:>w5$} \n",
-        sloc.lang,
-        sloc.files,
-        sloc.lines,
-        sloc.code,
-        sloc.comments,
-        sloc.blanks,
-        w0 = lang_len,
-        w1 = files_len,
-        w2 = lines_len,
-        w3 = code_len,
-        w4 = comments_len,
-        w5 = blanks_len,
-    ));
-
-    for _ in 0..total_len + 7 {
-        print_safe("=");
-    }
-    print_safe("\n");
+    print_safe(&mut stdout_handle, "\n");
 }
 
-fn print_safe(s: &str) {
-    match io::stdout().write(s.as_bytes()) {
+fn print_safe(handle: &mut StdoutLock, s: &str) {
+    match handle.write(s.as_bytes()) {
         Ok(_) => {}
         Err(_) => {
             std::process::exit(0);
