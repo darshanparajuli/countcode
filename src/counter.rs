@@ -143,7 +143,7 @@ impl<'a> Counter<'a> {
                 let mut multi_line_comment_index = 0;
 
                 loop {
-                    let mut line = match line_reader.read_line() {
+                    let line = match line_reader.read_line() {
                         Some(line) => line,
                         None => break,
                     };
