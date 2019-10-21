@@ -64,7 +64,8 @@ impl Scanner {
                     }
                     None => None,
                 }
-            }).collect();
+            })
+            .collect();
 
         let mut sloc_map: HashMap<Lang, Sloc> = HashMap::new();
         for sloc in count_result {
@@ -94,6 +95,7 @@ impl Scanner {
                 code: format!("{}", s.stats.code),
                 comments: format!("{}", s.stats.comments),
                 blanks: format!("{}", s.stats.blanks),
-            }).collect()
+            })
+            .collect()
     }
 }
