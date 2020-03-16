@@ -126,7 +126,7 @@ impl Lang {
         comment_info.insert(Lang::Toml, cpp_style_comment.clone());
         comment_info.insert(Lang::TypeScript, cpp_style_comment.clone());
         comment_info.insert(Lang::ObjectiveC, cpp_style_comment.clone());
-        comment_info.insert(Lang::Swift, cpp_style_comment.clone());
+        comment_info.insert(Lang::Swift, cpp_style_comment);
 
         let py_style_comment = {
             let single_line = Arc::new(["#"]);

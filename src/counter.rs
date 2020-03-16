@@ -86,10 +86,8 @@ impl<'a> LineReader<'a> {
             match self.mmap[end_index] {
                 b'\r' => {
                     self.next_index = end_index + 1;
-                    if self.next_index < length {
-                        if self.mmap[self.next_index] == b'\n' {
-                            self.next_index += 1;
-                        }
+                    if self.next_index < length && self.mmap[self.next_index] == b'\n' {
+                        self.next_index += 1;
                     }
 
                     return str::from_utf8(&self.mmap[starting_index..end_index]).ok();
@@ -142,12 +140,7 @@ impl<'a> Counter<'a> {
                 let mut multi_line_comment = false;
                 let mut multi_line_comment_index = 0;
 
-                loop {
-                    let line = match line_reader.read_line() {
-                        Some(line) => line,
-                        None => break,
-                    };
-
+                while let Some(line) = line_reader.read_line() {
                     let line = line.trim();
                     sloc.stats.lines += 1;
 
